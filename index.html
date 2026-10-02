@@ -1,0 +1,1411 @@
+<!DOCTYPE html>
+<html lang="fr" data-motion="auto">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Écrin — Films et séries</title>
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ───────── Tokens ───────── */
+:root{
+  color-scheme:dark;
+  --bg:#0A0A0A; --s1:#111111; --card:#161616; --card2:#1D1D1D;
+  --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.16);
+  --text:#F3F0EA; --text2:#C8C4BB; --muted:#8F8C85;
+  --accent:#D3B88C; --accent-ink:#1B1408; --accent-soft:rgba(211,184,140,.14);
+  --r:14px; --ease:cubic-bezier(.22,.8,.24,1);
+  --pad:clamp(20px,4.4vw,64px); --gap:16px; --per:2.4; --cols:2;
+  --font:"Inter",-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media(min-width:480px){:root{--per:3.3;--cols:3}}
+@media(min-width:680px){:root{--per:4;--cols:4}}
+@media(min-width:900px){:root{--per:5;--cols:5}}
+@media(min-width:1180px){:root{--per:6;--cols:6;--gap:18px}}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
+html.lock{overflow:hidden}
+body{margin:0;background:var(--bg);color:var(--text);font:400 15px/1.55 var(--font);-webkit-font-smoothing:antialiased;letter-spacing:-.005em;min-height:100vh}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+h1,h2,h3,p{margin:0}
+::selection{background:rgba(211,184,140,.35)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+.sr-only{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.skip{position:fixed;left:16px;top:-80px;z-index:500;background:var(--accent);color:var(--accent-ink);padding:10px 16px;border-radius:10px;font-weight:600;text-decoration:none}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + 12px)}
+.i{display:block;flex:none}
+.i.fill{fill:currentColor;stroke:none}
+.wrap{width:100%;max-width:1480px;margin-inline:auto;padding-inline:var(--pad)}
+main:focus,h1:focus{outline:0}
+
+/* ───────── Boutons ───────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:50px;padding:0 26px;border-radius:999px;border:1px solid transparent;font-weight:500;font-size:15px;text-decoration:none;white-space:nowrap;transition:background .3s var(--ease),transform .3s var(--ease),border-color .3s,filter .3s}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:#F3F0EA;color:#0A0A0A}
+.btn-primary:hover{filter:brightness(.92)}
+.btn-glass{background:rgba(255,255,255,.1);border-color:var(--line2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.btn-glass:hover{background:rgba(255,255,255,.18)}
+.btn-accent{background:var(--accent);color:var(--accent-ink)}
+.btn-accent:hover{filter:brightness(1.07)}
+.btn-ghost{border-color:var(--line2)}
+.btn-ghost:hover{background:rgba(255,255,255,.07)}
+.btn-ico{width:50px;padding:0}
+.btn-sm{height:38px;padding:0 16px;font-size:13.5px;gap:8px}
+.btn[aria-pressed=true]{color:var(--accent);border-color:rgba(211,184,140,.5);background:var(--accent-soft)}
+.btn[aria-pressed=true] .off,.btn[aria-pressed=false] .on{display:none}
+.cbtn{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.1);border:1px solid var(--line2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);transition:background .3s,color .3s,border-color .3s,transform .3s var(--ease)}
+.cbtn:hover{background:rgba(255,255,255,.18)}
+.cbtn.sm{width:36px;height:36px}
+.cbtn[aria-pressed=true]{color:var(--accent);border-color:rgba(211,184,140,.55);background:var(--accent-soft)}
+[aria-pressed=true] .i-heart{fill:currentColor}
+.lnk{color:var(--muted);font-size:13px;text-decoration:underline;text-underline-offset:3px}
+.lnk:hover{color:var(--text)}
+
+/* ───────── Header flottant ───────── */
+.hdr{position:fixed;z-index:60;top:calc(env(safe-area-inset-top,0px) + 14px);left:clamp(12px,2.6vw,36px);right:clamp(12px,2.6vw,36px);pointer-events:none}
+.hdr-in{pointer-events:auto;max-width:1560px;margin:0 auto;height:60px;display:grid;grid-template-columns:1fr minmax(0,580px) 1fr;align-items:center;gap:18px;padding:0 10px 0 24px;border-radius:999px;background:rgba(14,14,14,.55);border:1px solid var(--line);-webkit-backdrop-filter:blur(26px) saturate(1.5);backdrop-filter:blur(26px) saturate(1.5);box-shadow:0 10px 40px -12px rgba(0,0,0,.7);transition:background .4s var(--ease),border-color .4s}
+.hdr.solid .hdr-in{background:rgba(12,12,12,.84);border-color:var(--line2)}
+.logo{display:inline-flex;align-items:center;gap:12px;text-decoration:none;justify-self:start}
+.word{font-weight:400;font-size:15px;letter-spacing:.38em;margin-right:-.38em}
+.tools{display:flex;align-items:center;gap:4px;justify-self:end}
+.ibtn{position:relative;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;color:var(--text2);text-decoration:none;transition:background .25s,color .25s}
+.ibtn:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.ibtn.on,.ibtn[aria-expanded=true]{color:var(--accent)}
+.ibtn.on::after{content:"";position:absolute;bottom:3px;left:50%;translate:-50% 0;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.pwrap{position:relative}
+.pop{position:absolute;right:0;top:calc(100% + 16px);width:min(330px,calc(100vw - 24px));border-radius:22px;background:rgba(18,18,18,.94);border:1px solid var(--line2);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);box-shadow:0 40px 90px -20px rgba(0,0,0,.9);padding:18px;animation:pop .28s var(--ease)}
+@keyframes pop{from{opacity:0;transform:translateY(-6px) scale(.985)}}
+.pop-id{display:flex;gap:14px;align-items:center;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.pop-id b{display:block;font-weight:500;word-break:break-all}
+.pop-id small{color:var(--muted);font-size:12.5px}
+.av{width:44px;height:44px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:600;flex:none}
+.pop-nav{display:grid;padding:8px 0}
+.pop-nav a{display:flex;align-items:center;gap:14px;padding:11px 10px;border-radius:12px;text-decoration:none;color:var(--text2);transition:background .2s,color .2s}
+.pop-nav a:hover{background:rgba(255,255,255,.07);color:var(--text)}
+.pop-nav em{margin-left:auto;font-style:normal;color:var(--muted);font-size:13px}
+.pop-sw{display:flex;justify-content:space-between;align-items:center;padding:12px 10px;border-top:1px solid var(--line);font-size:14px;color:var(--text2)}
+.sw{width:42px;height:26px;border-radius:99px;background:rgba(255,255,255,.16);position:relative;transition:background .25s}
+.sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:translate .25s var(--ease)}
+.sw[aria-checked=true]{background:var(--accent)}
+.sw[aria-checked=true] i{translate:16px 0;background:var(--accent-ink)}
+.pop-cta{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:12px;font-size:13px;color:var(--muted)}
+.pop-cta .btn{width:100%}
+
+/* Recherche */
+.search{position:relative}
+.search input{width:100%;height:42px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font-size:14.5px;padding:0 54px 0 46px;outline:0;transition:background .3s,border-color .3s,box-shadow .3s}
+.search input::placeholder{color:var(--muted)}
+.search input:hover{background:rgba(255,255,255,.08)}
+.search input:focus{background:rgba(255,255,255,.1);border-color:rgba(211,184,140,.55);box-shadow:0 0 0 4px rgba(211,184,140,.12)}
+.s-ico{position:absolute;left:16px;top:50%;translate:0 -50%;color:var(--muted);pointer-events:none;display:flex}
+.search kbd{position:absolute;right:14px;top:50%;translate:0 -50%;font:500 11px var(--font);color:var(--muted);border:1px solid var(--line2);border-radius:6px;padding:2px 7px;pointer-events:none}
+.s-clear{position:absolute;right:8px;top:50%;translate:0 -50%;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--text2);background:rgba(255,255,255,.1)}
+.sr{position:absolute;left:0;right:0;top:calc(100% + 14px);border-radius:22px;background:rgba(18,18,18,.95);border:1px solid var(--line2);-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);box-shadow:0 40px 90px -20px rgba(0,0,0,.9);overflow:hidden;animation:pop .28s var(--ease)}
+.sr-head{padding:16px 22px 8px;font-size:13px;color:var(--muted)}
+.sr-list{max-height:min(460px,62vh);overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;padding:4px 10px 12px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
+.sr-item{display:grid;grid-template-columns:44px 1fr auto;gap:16px;align-items:center;padding:8px 12px;border-radius:14px;text-decoration:none;transition:background .2s}
+.sr-item.act,.sr-item:hover{background:rgba(255,255,255,.07)}
+.sr-th{position:relative;width:44px;aspect-ratio:2/3;border-radius:7px;overflow:hidden}
+.sr-th .pl{display:none}
+.sr-t{font-weight:500;font-size:15px;line-height:1.3}
+.sr-t mark{background:none;color:var(--accent)}
+.sr-s{font-size:12.5px;color:var(--muted);margin-top:2px}
+.sr-r{display:flex;align-items:center;gap:6px;color:var(--accent);font-weight:500;font-size:13.5px}
+.sr-none{padding:30px 22px 34px;text-align:center;color:var(--muted)}
+.sr-none b{display:block;color:var(--text);font-weight:500;margin-bottom:4px;font-size:15px}
+
+@media(max-width:760px){
+  .hdr-in{grid-template-columns:auto 1fr auto;padding:0 6px 0 14px;gap:8px;height:56px}
+  .word,.search kbd{display:none}
+  .ibtn{width:40px;height:40px}
+  .sr{position:fixed;left:12px;right:12px;top:calc(env(safe-area-inset-top,0px) + 82px)}
+}
+
+/* ───────── Art généré ───────── */
+.art{position:absolute;inset:0;overflow:hidden;background:
+  radial-gradient(70% 55% at var(--gx,50%) var(--gy,34%),hsl(var(--h1) 70% 58% / .42),transparent 72%),
+  linear-gradient(155deg,hsl(var(--h1) 38% 17%),hsl(var(--h2) 45% 6%) 85%)}
+.art svg{position:absolute;inset:0;width:100%;height:100%}
+.pa::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.7),transparent 52%)}
+.pl{font:500 17px var(--font);letter-spacing:-.012em;fill:#F3F0EA}
+
+/* ───────── Hero ───────── */
+.hero{position:relative;height:clamp(560px,88vh,840px);overflow:hidden;isolation:isolate;background:#050505}
+.slide{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity 1.1s var(--ease),visibility 0s 1.1s}
+.slide.on{opacity:1;visibility:visible;transition:opacity 1.1s var(--ease)}
+.slide .art{transform-origin:70% 40%}
+.slide.on .art{animation:kb 18s ease-out both}
+@keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
+.shade{position:absolute;inset:0;background:
+  linear-gradient(90deg,rgba(10,10,10,.94) 0%,rgba(10,10,10,.58) 38%,rgba(10,10,10,.04) 74%),
+  linear-gradient(0deg,var(--bg) 0%,rgba(10,10,10,0) 40%),
+  linear-gradient(180deg,rgba(10,10,10,.6),transparent 24%)}
+.cn{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:flex-start;padding-bottom:clamp(96px,15vh,160px)}
+.eyebrow{font-size:14px;color:var(--accent);display:flex;align-items:center;gap:12px;font-weight:500}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+.h-title{font-weight:300;font-size:clamp(42px,6.6vw,96px);line-height:.98;letter-spacing:-.04em;max-width:13ch;margin:14px 0 20px;text-wrap:balance}
+.h-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;color:var(--text2);font-size:14.5px;margin-bottom:18px}
+.age{border:1px solid var(--line2);border-radius:6px;padding:0 7px;font-size:12px;line-height:20px;color:var(--text2)}
+.h-syn{max-width:54ch;color:var(--text2);font-size:16.5px;line-height:1.62;margin-bottom:30px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.h-syn.full{-webkit-line-clamp:unset;display:block}
+.h-act{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.hero-ctl{position:absolute;z-index:4;left:0;right:0;bottom:clamp(36px,7vh,64px);display:flex;justify-content:flex-end;align-items:center;gap:18px}
+.dots{display:flex;gap:6px}
+.dot{position:relative;width:38px;height:22px}
+.dot::before,.dot::after{content:"";position:absolute;left:0;top:10px;height:2px;border-radius:2px}
+.dot::before{right:0;background:rgba(255,255,255,.28)}
+.dot::after{width:0;background:#fff}
+.dot.on::after{animation:fill 10s linear forwards}
+@keyframes fill{to{width:100%}}
+.hero.paused .dot.on::after,.hero:hover .dot.on::after,.hero:has(:focus-visible) .dot.on::after{animation-play-state:paused}
+.sections{position:relative;z-index:2;margin-top:-34px;padding-bottom:32px}
+
+/* ───────── Rangées ───────── */
+.row{padding-top:18px}
+.row-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:2px}
+.row-head h2{font-size:21px;font-weight:500;letter-spacing:-.02em}
+.more{display:inline-flex;align-items:center;gap:2px;color:var(--muted);font-size:13.5px;text-decoration:none;transition:color .25s}
+.more:hover{color:var(--accent)}
+.row-wrap{position:relative;margin-inline:-8px}
+.track{display:flex;gap:var(--gap);overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:8px;padding:28px 8px;margin-block:-4px;scrollbar-width:none;overscroll-behavior-x:contain}
+.track::-webkit-scrollbar{display:none}
+.chev{position:absolute;z-index:3;top:32px;bottom:92px;width:58px;display:flex;align-items:center;justify-content:center;color:var(--text);opacity:0;transition:opacity .3s}
+.chev.prev{left:0;border-radius:var(--r) 0 0 var(--r);background:linear-gradient(90deg,rgba(10,10,10,.88),transparent)}
+.chev.next{right:0;border-radius:0 var(--r) var(--r) 0;background:linear-gradient(270deg,rgba(10,10,10,.88),transparent)}
+.row-wrap:hover .chev:not(:disabled),.row-wrap:focus-within .chev:not(:disabled){opacity:1}
+.chev:disabled{pointer-events:none}
+@media(hover:none){.chev{display:none}}
+
+/* ───────── Cartes ───────── */
+.card{flex:0 0 calc((100% - (var(--per) - 1) * var(--gap)) / var(--per));min-width:0;scroll-snap-align:start}
+.pw{position:relative;border-radius:var(--r);transition:transform .5s var(--ease),filter .5s var(--ease)}
+.pl-link{display:block;text-decoration:none}
+.poster{position:relative;aspect-ratio:2/3;border-radius:var(--r);overflow:hidden;background:var(--card);box-shadow:0 10px 26px -14px rgba(0,0,0,.9);transition:box-shadow .5s var(--ease)}
+.poster::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);transition:box-shadow .4s;pointer-events:none;z-index:3}
+.tag{position:absolute;top:10px;right:10px;z-index:2;font-size:11px;font-weight:500;color:var(--accent);background:rgba(10,10,10,.55);border:1px solid rgba(211,184,140,.45);border-radius:999px;padding:2px 9px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.pbar{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.22);z-index:2}
+.pbar i{display:block;height:100%;background:var(--accent)}
+.quick{position:absolute;z-index:4;left:10px;right:10px;bottom:14px;display:flex;gap:8px;opacity:0;transform:translateY(8px);transition:opacity .35s var(--ease),transform .35s var(--ease);pointer-events:none}
+.qb{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(20,20,20,.62);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line2);transition:background .25s,transform .25s var(--ease)}
+.qb:hover{background:rgba(255,255,255,.22);transform:scale(1.08)}
+.qb-play{background:#F3F0EA;color:#0A0A0A;border-color:transparent}
+.qb-play:hover{background:#fff}
+.qb[aria-pressed=true]{color:var(--accent);border-color:rgba(211,184,140,.6)}
+@media(hover:hover){
+  .card:hover .pw,.card:focus-within .pw{transform:translateY(-7px) scale(1.026);filter:brightness(1.1)}
+  .card:hover .poster,.card:focus-within .poster{box-shadow:0 26px 48px -18px rgba(0,0,0,.95),0 0 40px -18px rgba(211,184,140,.5)}
+  .card:hover .poster::after,.card:focus-within .poster::after{box-shadow:inset 0 0 0 1px rgba(211,184,140,.42)}
+  .card:hover .quick,.card:focus-within .quick{opacity:1;transform:none;pointer-events:auto}
+}
+.card:focus-within .quick{opacity:1;transform:none;pointer-events:auto}
+.meta{display:block;padding:12px 2px 0;text-decoration:none}
+.mt{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}
+.ms{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted);margin-top:2px;white-space:nowrap}
+.ms span:first-child{overflow:hidden;text-overflow:ellipsis}
+.rt{display:inline-flex;align-items:center;gap:4px;color:var(--accent);font-weight:500}
+.ms.mine b{color:var(--accent);font-weight:600}
+
+/* ───────── Pages ───────── */
+#view.enter{animation:vin .45s var(--ease)}
+@keyframes vin{from{opacity:0}}
+.page{padding-top:clamp(120px,16vh,150px);padding-bottom:48px;min-height:70vh}
+.page h1{font-weight:300;font-size:clamp(34px,4.6vw,60px);letter-spacing:-.035em;line-height:1.05}
+.page .sub{color:var(--muted);margin-top:10px;font-size:16px}
+.back{display:inline-flex;align-items:center;gap:4px;color:var(--text2);text-decoration:none;font-size:14px;margin-bottom:26px;transition:color .25s}
+.back:hover{color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:34px var(--gap);margin-top:40px}
+.grid .card{flex:none}
+.stats{display:flex;gap:36px;margin-top:26px;flex-wrap:wrap}
+.stats div{display:grid;gap:2px}
+.stats b{font-size:30px;font-weight:300;letter-spacing:-.03em}
+.stats span{font-size:13px;color:var(--muted)}
+.empty{margin-top:56px;padding:64px 24px;border:1px dashed var(--line2);border-radius:28px;text-align:center;display:grid;justify-items:center;gap:14px;color:var(--muted)}
+.empty .ring{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;color:var(--accent);background:var(--accent-soft)}
+.empty h2{color:var(--text);font-weight:500;font-size:20px}
+.empty p{max-width:44ch}
+
+/* Page titre */
+.t-hero{position:relative;overflow:hidden;padding-top:clamp(120px,15vh,150px);isolation:isolate}
+.t-shade{background:linear-gradient(90deg,rgba(10,10,10,.92),rgba(10,10,10,.5) 60%,rgba(10,10,10,.2)),linear-gradient(0deg,var(--bg),transparent 55%),linear-gradient(180deg,rgba(10,10,10,.7),transparent 30%)}
+.t-grid{position:relative;z-index:2;display:grid;grid-template-columns:240px minmax(0,1fr);gap:clamp(28px,4vw,56px);align-items:end;padding-bottom:44px}
+.t-poster{position:relative;aspect-ratio:2/3;border-radius:18px;overflow:hidden;box-shadow:0 36px 80px -24px #000,0 0 0 1px var(--line2)}
+.t-title{font-weight:300;font-size:clamp(38px,5.6vw,80px);line-height:1;letter-spacing:-.04em;margin:14px 0 18px;text-wrap:balance}
+.t-prog{display:flex;align-items:center;gap:14px;margin-top:22px;max-width:420px;font-size:13px;color:var(--muted)}
+.t-prog .bar{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.18);overflow:hidden}
+.t-prog .bar i{display:block;height:100%;background:var(--accent)}
+.rate{margin-top:28px;display:grid;gap:8px;justify-items:start}
+.rate-h{display:flex;gap:14px;align-items:baseline;font-size:14px;color:var(--text2)}
+.rv b{font-size:26px;font-weight:300;color:var(--accent);letter-spacing:-.03em}
+.rv em{font-style:normal;color:var(--muted)}
+.stars{display:flex;flex-direction:row-reverse;justify-content:flex-end;gap:2px}
+.rs{width:30px;height:30px;display:grid;place-items:center;color:var(--muted);border-radius:8px;transition:transform .2s var(--ease)}
+.rs:hover{transform:scale(1.15)}
+.rs.on svg{fill:currentColor;color:var(--accent)}
+.stars:hover .rs svg{fill:none;color:var(--muted)}
+.stars .rs:hover svg,.stars .rs:hover~.rs svg{fill:currentColor;color:var(--accent)}
+.sec{padding-top:36px}
+.sec h2{font-size:21px;font-weight:500;letter-spacing:-.02em;margin-bottom:18px;display:flex;align-items:center;gap:14px}
+.sec select{margin-left:auto;height:38px;border-radius:999px;border:1px solid var(--line2);background:var(--card);padding:0 36px 0 16px;font-size:14px;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%238F8C85' stroke-width='1.8' stroke-linecap='round' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.eps{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.ep{width:100%;display:grid;grid-template-columns:32px 148px minmax(0,1fr) auto 24px;gap:18px;align-items:center;text-align:left;padding:12px 14px;border-radius:16px;transition:background .25s}
+.ep:hover,.ep.cur{background:rgba(255,255,255,.05)}
+.en{font-size:22px;font-weight:300;color:var(--muted);text-align:center;font-variant-numeric:tabular-nums}
+.et{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:linear-gradient(140deg,hsl(var(--h1) 45% 24%),hsl(var(--h2) 45% 8%))}
+.et::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at 70% 30%,hsl(var(--h1) 80% 65% / .35),transparent 70%)}
+.eb b{display:block;font-weight:500;font-size:15px}
+.eb small{display:block;color:var(--muted);font-size:13px;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ed{font-size:13px;color:var(--muted)}
+.ep>.i{color:var(--text2);opacity:0;transition:opacity .25s}
+.ep:hover>.i,.ep:focus-visible>.i{opacity:1}
+.det{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px 40px;margin:0}
+.det dt{font-size:13px;color:var(--muted);margin-bottom:4px}
+.det dd{margin:0;color:var(--text2)}
+@media(max-width:760px){
+  .t-grid{grid-template-columns:1fr}
+  .t-poster{display:none}
+  .ep{grid-template-columns:24px 92px minmax(0,1fr) 24px;gap:12px}
+  .ep .ed{display:none}
+  .grid{gap:26px 12px}
+}
+
+/* Temps forts (page) */
+.ctl{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;margin-top:34px}
+.seg{display:inline-flex;padding:4px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.seg button{height:34px;padding:0 16px;border-radius:999px;font-size:13.5px;color:var(--text2);transition:background .25s,color .25s}
+.seg button[aria-checked=true]{background:#F3F0EA;color:#0A0A0A;font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip-b{height:34px;padding:0 15px;border-radius:999px;border:1px solid var(--line2);font-size:13.5px;color:var(--text2);transition:background .25s,color .25s,border-color .25s}
+.chip-b:hover{background:rgba(255,255,255,.06)}
+.chip-b[aria-checked=true]{color:var(--accent);border-color:rgba(211,184,140,.6);background:var(--accent-soft)}
+.hl-group{margin-top:46px}
+.hl-gh{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+.hl-gh .mini{position:relative;width:44px;aspect-ratio:2/3;border-radius:8px;overflow:hidden;flex:none}
+.hl-gh .mini .pl{display:none}
+.hl-gh h2{font-size:20px;font-weight:500;letter-spacing:-.02em}
+.hl-gh small{display:block;color:var(--muted);font-size:13px}
+.hl-gh a{margin-left:auto;color:var(--muted);font-size:13.5px;text-decoration:none}
+.hl-gh a:hover{color:var(--accent)}
+.hl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr));gap:20px}
+.hl{border-radius:20px;background:var(--card);border:1px solid var(--line);overflow:hidden;transition:transform .45s var(--ease),border-color .3s,box-shadow .45s}
+@media(hover:hover){.hl:hover{transform:translateY(-4px);border-color:rgba(211,184,140,.32);box-shadow:0 26px 50px -24px #000}}
+.hl-th{position:relative}
+.hl-play{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden}
+.hl-play::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.6),transparent 55%)}
+.hl-badge{position:absolute;z-index:2;left:12px;bottom:10px;font-size:12px;font-variant-numeric:tabular-nums;color:var(--text);background:rgba(10,10,10,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:999px;padding:3px 10px}
+.hl-pi{position:absolute;z-index:2;left:50%;top:50%;translate:-50% -50%;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:rgba(243,240,234,.94);color:#0A0A0A;opacity:0;scale:.9;transition:.35s var(--ease)}
+.hl-play:hover .hl-pi,.hl-play:focus-visible .hl-pi{opacity:1;scale:1}
+.hl-pin{position:absolute;z-index:3;top:10px;right:10px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(10,10,10,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--text2);border:1px solid var(--line2)}
+.hl-pin[aria-pressed=true]{color:var(--accent);border-color:rgba(211,184,140,.6)}
+.hl-pin[aria-pressed=true] svg{fill:currentColor}
+.hl-b{padding:16px 18px 14px;display:grid;gap:8px}
+.hl-b h3{font-size:16px;font-weight:500;letter-spacing:-.01em}
+.hl-b p{color:var(--text2);font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hl-m{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:12.5px;color:var(--muted)}
+.hl-m .c{color:var(--accent);border:1px solid rgba(211,184,140,.4);border-radius:999px;padding:1px 10px}
+.hl-a{display:flex;gap:6px;align-items:center;margin-top:6px}
+.hl-a .sp{flex:1}
+.ib{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--text2);transition:background .25s,color .25s}
+.ib:hover{background:rgba(255,255,255,.09);color:var(--text)}
+.ib.del:hover{color:#E8A39B}
+
+/* Footer */
+.ft{padding-top:56px;padding-bottom:48px}
+.ft-in{border-top:1px solid var(--line);padding-top:28px;display:flex;flex-wrap:wrap;gap:16px 40px;align-items:center;color:var(--muted);font-size:13.5px}
+.ft-in .word{color:var(--text);font-size:13px}
+.ft-in nav{display:flex;gap:24px;margin-left:auto}
+.ft small{display:block;margin-top:18px;color:#6B6862;font-size:12.5px}
+
+/* Dialogues */
+dialog{border:1px solid var(--line2);border-radius:28px;background:#141414;color:var(--text);padding:0;width:min(480px,calc(100% - 28px));box-shadow:0 60px 120px -20px #000}
+dialog::backdrop{background:rgba(0,0,0,.66);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+dialog[open]{animation:pop .3s var(--ease)}
+.dlg{position:relative;padding:34px 32px 30px;display:grid;gap:14px}
+.dlg-x{position:absolute;top:16px;right:16px}
+.dlg h2{font-weight:300;font-size:30px;letter-spacing:-.03em;line-height:1.1;padding-right:36px}
+.dlg-p{color:var(--text2)}
+.dlg-ul{list-style:none;margin:2px 0 6px;padding:0;display:grid;gap:10px;color:var(--text2);font-size:14.5px}
+.dlg-ul li{display:flex;gap:12px;align-items:center}
+.dlg-ul li::before{content:"";width:8px;height:8px;rotate:45deg;background:var(--accent);border-radius:2px;flex:none}
+.fld{font-size:13px;color:var(--muted);margin-bottom:-6px}
+.inp{width:100%;height:50px;border-radius:14px;border:1px solid var(--line2);background:var(--card);padding:0 16px;outline:0;transition:border-color .25s,box-shadow .25s}
+textarea.inp{height:auto;padding:12px 16px;resize:vertical;line-height:1.5}
+.inp:focus{border-color:rgba(211,184,140,.6);box-shadow:0 0 0 4px rgba(211,184,140,.12)}
+.err{color:#E8A39B;font-size:13.5px}
+.dlg-n{font-size:12.5px;color:var(--muted);text-align:center}
+.dlg .row2{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+
+/* Toast */
+#toast{position:fixed;z-index:600;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 28px);translate:-50% 20px;opacity:0;pointer-events:none;display:flex;align-items:center;gap:12px;padding:12px 20px;border-radius:999px;background:rgba(28,28,28,.94);border:1px solid var(--line2);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:0 20px 50px -10px rgba(0,0,0,.8);font-size:14px;transition:opacity .4s var(--ease),translate .4s var(--ease);max-width:calc(100% - 28px)}
+#toast.on{opacity:1;translate:-50% 0;pointer-events:auto}
+.toast-act{color:var(--accent);font-weight:600;padding:5px 12px;margin:-5px -12px -5px 0;border-radius:999px;background:var(--accent-soft)}
+
+/* ───────── Lecteur ───────── */
+.player{position:fixed;inset:0;z-index:300;background:#000;color:var(--text);overflow:hidden;opacity:0;transition:opacity .4s var(--ease);-webkit-user-select:none;user-select:none}
+.player.in{opacity:1}
+.player.idle{cursor:none}
+.p-scene .art{animation:pk 40s ease-in-out infinite alternate}
+@keyframes pk{from{transform:scale(1.04)}to{transform:scale(1.14) translate(-1.5%,1%)}}
+.p-blobs{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.p-blobs i{position:absolute;border-radius:50%;filter:blur(80px)}
+.p-blobs i:nth-child(1){width:46vmax;height:46vmax;left:-12%;top:-22%;background:hsl(var(--h1) 70% 50% / .3);animation:b1 calc(28s / var(--spd,1)) ease-in-out infinite alternate}
+.p-blobs i:nth-child(2){width:38vmax;height:38vmax;right:-10%;bottom:-18%;background:hsl(var(--h2) 70% 48% / .32);animation:b2 calc(34s / var(--spd,1)) ease-in-out infinite alternate}
+.p-blobs i:nth-child(3){width:26vmax;height:26vmax;left:38%;top:30%;background:hsl(var(--h1) 80% 70% / .14);animation:b3 calc(22s / var(--spd,1)) ease-in-out infinite alternate}
+@keyframes b1{to{transform:translate(18vw,14vh)}}
+@keyframes b2{to{transform:translate(-20vw,-10vh)}}
+@keyframes b3{to{transform:translate(-14vw,16vh) scale(1.3)}}
+.player.paused .p-scene .art,.player.paused .p-blobs i{animation-play-state:paused}
+.p-vig{position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 45%,transparent 45%,rgba(0,0,0,.7) 100%);pointer-events:none}
+.p-hit{position:absolute;inset:0}
+.p-subs{position:absolute;left:50%;translate:-50% 0;bottom:11%;max-width:min(84%,900px);text-align:center;font-size:clamp(17px,2.1vw,30px);font-weight:500;line-height:1.5;text-shadow:0 2px 12px rgba(0,0,0,.9);transition:bottom .5s var(--ease);pointer-events:none}
+.p-subs span{background:rgba(0,0,0,.5);padding:2px 12px;border-radius:8px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.player:not(.idle) .p-subs{bottom:212px}
+.ui{transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.player.idle .ui{opacity:0;pointer-events:none}
+.player.idle .p-top{transform:translateY(-10px)}
+.player.idle .p-bottom{transform:translateY(10px)}
+.p-top{position:absolute;left:0;right:0;top:0;z-index:3;padding:calc(env(safe-area-inset-top,0px) + 20px) clamp(16px,3vw,40px) 44px;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:start;background:linear-gradient(180deg,rgba(0,0,0,.72),transparent)}
+.p-left{display:flex;gap:10px;flex-wrap:wrap}
+.p-right{display:flex;justify-content:flex-end}
+.pill{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px 0 14px;border-radius:999px;background:rgba(30,30,30,.55);border:1px solid var(--line2);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);font-size:14px;font-weight:500;white-space:nowrap;transition:background .25s}
+.pill:hover{background:rgba(70,70,70,.7)}
+.p-title{text-align:center;font-size:16px;font-weight:500;padding-top:8px;max-width:46vw}
+.p-title small{display:block;color:var(--text2);font-weight:400;font-size:13px;margin-top:2px}
+.p-title .demo{color:var(--muted);font-size:11.5px}
+.p-bottom{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:56px clamp(16px,3vw,40px) calc(env(safe-area-inset-bottom,0px) + 22px);background:linear-gradient(0deg,rgba(0,0,0,.85),transparent)}
+.p-seekrow{display:flex;align-items:center;gap:16px}
+.tm{font-variant-numeric:tabular-nums;font-size:13px;color:var(--text2);min-width:54px}
+#pRem{text-align:right}
+.seek{position:relative;flex:1;height:26px;display:flex;align-items:center;cursor:pointer;touch-action:none;--p:0}
+.seek .trk{position:relative;width:100%;height:4px;border-radius:4px;background:rgba(255,255,255,.22);transition:height .2s}
+.seek:hover .trk,.seek:focus-visible .trk,.seek.drag .trk{height:7px}
+.seek .fill{position:absolute;inset:0 auto 0 0;width:calc(var(--p) * 100%);background:#F3F0EA;border-radius:inherit}
+.seek .thumb{position:absolute;top:50%;left:calc(var(--p) * 100%);width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.5);transform:scale(0);transition:transform .2s}
+.seek:hover .thumb,.seek:focus-visible .thumb,.seek.drag .thumb{transform:scale(1)}
+.marks{position:absolute;inset:0;pointer-events:none}
+.mk-r{position:absolute;top:0;bottom:0;background:rgba(211,184,140,.75);border-radius:4px}
+.mk-r.pend{background:rgba(211,184,140,.45);outline:1px dashed var(--accent)}
+.mk{position:absolute;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;background:var(--accent);rotate:45deg;border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.45)}
+.tip{position:absolute;bottom:26px;translate:-50% 0;padding:5px 11px;border-radius:10px;background:rgba(28,28,28,.92);border:1px solid var(--line2);font-size:12.5px;white-space:nowrap;pointer-events:none;font-variant-numeric:tabular-nums}
+.tip b{color:var(--accent);font-weight:500}
+.p-ctrls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:8px;gap:12px}
+.pg{display:flex;align-items:center;gap:6px}
+.pg.r{justify-content:flex-end}
+.pc{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;transition:background .25s,transform .25s var(--ease)}
+.pc:hover{background:rgba(255,255,255,.14)}
+.pc:active{transform:scale(.94)}
+.pc-main{width:64px;height:64px;background:rgba(255,255,255,.14)}
+.pc-hl{width:auto;border-radius:999px;padding:0 16px 0 12px;gap:8px;display:inline-flex;align-items:center;height:44px;color:var(--accent);border:1px solid rgba(211,184,140,.42);background:rgba(211,184,140,.08);font-size:13.5px;font-weight:500}
+.pc-hl:hover{background:rgba(211,184,140,.18)}
+.vol{display:flex;align-items:center}
+.vol input{width:0;opacity:0;transition:width .3s var(--ease),opacity .3s;accent-color:#F3F0EA;height:20px}
+.vol:hover input,.vol:focus-within input{width:96px;opacity:1}
+.p-big{position:absolute;z-index:2;left:50%;top:50%;translate:-50% -50%;width:100px;height:100px;border-radius:50%;background:rgba(20,20,20,.5);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--line2);display:grid;place-items:center;opacity:0;scale:.9;pointer-events:none;transition:opacity .35s var(--ease),scale .35s var(--ease)}
+.player.paused .p-big{opacity:1;scale:1;pointer-events:auto}
+.player.ended .p-big,.player.cmp .p-big{display:none}
+.panel{position:absolute;z-index:6;right:clamp(16px,3vw,40px);bottom:140px;width:min(404px,calc(100% - 32px));max-height:calc(100% - 210px);overflow:auto;border-radius:24px;background:rgba(22,22,22,.88);border:1px solid var(--line2);-webkit-backdrop-filter:blur(34px) saturate(1.4);backdrop-filter:blur(34px) saturate(1.4);box-shadow:0 40px 90px -20px rgba(0,0,0,.9);padding:18px;animation:pop .3s var(--ease)}
+.tabs{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.06);margin-bottom:12px}
+.tabs button{flex:1;height:34px;border-radius:999px;font-size:13px;color:var(--text2);transition:background .25s,color .25s;white-space:nowrap}
+.tabs button[aria-selected=true]{background:#F3F0EA;color:#0A0A0A;font-weight:500}
+.opts{display:grid;gap:2px}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;text-align:left;font-size:14.5px;transition:background .2s}
+.opt:hover{background:rgba(255,255,255,.07)}
+.opt .i{color:var(--accent);opacity:0}
+.opt[aria-checked=true] .i{opacity:1}
+.cmp-head{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.cmp-head h3{font-size:17px;font-weight:500;letter-spacing:-.01em}
+.cmp-head .dia{color:var(--accent);display:flex}
+.cmp-head .cbtn{margin-left:auto}
+.cmp-sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+.cmp-range{display:grid;gap:8px;padding:12px;border-radius:16px;background:rgba(255,255,255,.05);margin-bottom:14px}
+.cmp-row{display:grid;grid-template-columns:44px auto 1fr auto auto;gap:6px;align-items:center;font-size:13px}
+.cmp-row .lbl{color:var(--muted)}
+.cmp-row output{text-align:center;font-variant-numeric:tabular-nums;font-size:15px;font-weight:500}
+.mini-b{height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--line2);font-size:12px;color:var(--text2);transition:background .2s}
+.mini-b:hover{background:rgba(255,255,255,.1)}
+.cmp-len{font-size:12.5px;color:var(--accent);text-align:right}
+.panel label{display:block;font-size:12.5px;color:var(--muted);margin:10px 0 6px}
+.panel .inp{height:44px;border-radius:12px}
+.panel textarea.inp{height:auto}
+.panel .chips{margin-top:12px}
+.cmp-act{display:flex;gap:8px;margin-top:16px;align-items:center}
+.cmp-act .sp{flex:1}
+.p-end{position:absolute;inset:0;z-index:7;display:grid;place-items:center;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);padding:20px}
+.end-c{display:grid;gap:12px;justify-items:center;text-align:center;max-width:420px}
+.end-c h2{font-weight:300;font-size:clamp(28px,4vw,40px);letter-spacing:-.03em}
+.end-c p{color:var(--text2)}
+.end-b{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:10px}
+@media(max-width:820px){
+  .p-ctrls{grid-template-columns:auto 1fr auto}
+  .pc-hl .t{display:none}
+  .pc-hl{padding:0;width:44px;justify-content:center}
+  .p-title{display:none}
+  .p-top{grid-template-columns:1fr auto}
+  .vol input{display:none}
+  .panel{right:12px;left:12px;width:auto;bottom:150px}
+  .pill{padding:0 14px 0 10px}
+  .pill .t{display:none}
+}
+
+/* Mouvement réduit */
+@media(prefers-reduced-motion:reduce){
+  html[data-motion=auto] *,html[data-motion=auto] *::before,html[data-motion=auto] *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  html[data-motion=auto] .dot.on::after{animation:none;width:100%}
+}
+html[data-motion=reduced] *,html[data-motion=reduced] *::before,html[data-motion=reduced] *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+html[data-motion=reduced] .dot.on::after{animation:none;width:100%}
+</style>
+</head>
+<body>
+<a class="skip" href="#view">Aller au contenu</a>
+
+<div id="app">
+  <header class="hdr" id="hdr">
+    <div class="hdr-in">
+      <a class="logo" href="#/" aria-label="Écrin, retour à l’accueil">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5 21.5 12 12 21.5 2.5 12Z" fill="none" stroke="#D3B88C" stroke-width="1.4"/><path d="M12 7.6 16.4 12 12 16.4 7.6 12Z" fill="#D3B88C"/></svg>
+        <span class="word">ÉCRIN</span>
+      </a>
+      <div class="search" id="search">
+        <label class="sr-only" for="q">Rechercher un film ou une série</label>
+        <span class="s-ico" id="sIco"></span>
+        <input id="q" type="text" role="combobox" aria-expanded="false" aria-controls="srl" aria-autocomplete="list" autocomplete="off" spellcheck="false" enterkeyhint="search" placeholder="Rechercher un film, une série, un genre…">
+        <button class="s-clear" id="qc" aria-label="Effacer la recherche" hidden></button>
+        <kbd id="qk" aria-hidden="true">/</kbd>
+        <div class="sr" id="sr" hidden>
+          <div class="sr-head" id="srh"></div>
+          <div class="sr-list" id="srl" role="listbox" aria-label="Résultats de recherche"></div>
+        </div>
+      </div>
+      <nav class="tools" aria-label="Mon espace">
+        <a class="ibtn" href="#/favoris" data-nav="favoris" title="Favoris" aria-label="Favoris"></a>
+        <a class="ibtn" href="#/deja-vu" data-nav="deja-vu" title="Déjà vu" aria-label="Déjà vu"></a>
+        <div class="pwrap">
+          <button class="ibtn" id="pBtn" aria-haspopup="true" aria-expanded="false" aria-controls="pPop" title="Profil" aria-label="Profil"></button>
+          <div class="pop" id="pPop" hidden></div>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="view" tabindex="-1"></main>
+
+  <footer class="ft wrap">
+    <div class="ft-in">
+      <span class="word">ÉCRIN</span>
+      <p>Films et séries, sans publicité. Accessible sans compte.</p>
+      <nav aria-label="Informations"><span>Aide</span><span>Accessibilité</span><span>Confidentialité</span><span>Conditions</span></nav>
+    </div>
+    <small>© 2026 Écrin. Catalogue fictif et affiches générées pour cette maquette.</small>
+  </footer>
+</div>
+
+<!-- Lecteur -->
+<div class="player" id="player" role="dialog" aria-modal="true" aria-label="Lecteur vidéo" hidden>
+  <div class="p-scene" id="pScene"></div>
+  <div class="p-blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="p-vig" aria-hidden="true"></div>
+  <div class="p-hit" id="pHit"></div>
+  <div class="p-subs" id="pSubs" aria-hidden="true"></div>
+  <button class="p-big" id="pBig" data-act="p-toggle" aria-label="Reprendre la lecture"></button>
+
+  <div class="p-top ui">
+    <div class="p-left">
+      <button class="pill" id="pBack" data-act="p-back">Retour</button>
+      <button class="pill" data-act="p-home" id="pHome">Accueil</button>
+    </div>
+    <div class="p-title" id="pTitle"></div>
+    <div class="p-right"><button class="pill" id="pExit" data-act="p-fs" hidden><span class="t">Quitter le plein écran</span></button></div>
+  </div>
+
+  <div class="p-bottom ui">
+    <div class="p-seekrow">
+      <span class="tm" id="pCur">0:00</span>
+      <div class="seek" id="pSeek" role="slider" tabindex="0" aria-label="Position de lecture" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="trk"><div class="fill"></div><div class="marks" id="pMarks"></div></div>
+        <div class="thumb"></div>
+        <div class="tip" id="pTip" hidden></div>
+      </div>
+      <span class="tm" id="pRem">-0:00</span>
+    </div>
+    <div class="p-ctrls">
+      <div class="pg">
+        <div class="vol">
+          <button class="pc" id="pMute" data-act="p-mute" aria-label="Couper le son"></button>
+          <input id="pVol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="Volume">
+        </div>
+      </div>
+      <div class="pg">
+        <button class="pc" data-act="p-skip" data-d="-10" aria-label="Reculer de 10 secondes" id="pB10"></button>
+        <button class="pc pc-main" id="pPlay" data-act="p-toggle" aria-label="Pause"></button>
+        <button class="pc" data-act="p-skip" data-d="10" aria-label="Avancer de 10 secondes" id="pF10"></button>
+      </div>
+      <div class="pg r">
+        <button class="pc pc-hl" id="pHl" data-act="p-hl" aria-label="Marquer un temps fort (H)" title="Marquer un temps fort (H)"><span class="t">Marquer un temps fort</span></button>
+        <button class="pc" id="pGear" data-act="p-set" aria-haspopup="true" aria-expanded="false" aria-controls="pSet" aria-label="Audio, sous-titres, qualité et vitesse" title="Réglages"></button>
+        <button class="pc" id="pFs" data-act="p-fs" aria-label="Plein écran (F)" title="Plein écran (F)"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="pSet" hidden></div>
+
+  <div class="panel" id="pComp" role="group" aria-labelledby="cmpH" hidden>
+    <div class="cmp-head"><span class="dia" id="cmpI"></span><h3 id="cmpH">Nouveau temps fort</h3><button class="cbtn sm" data-act="cmp-x" aria-label="Annuler" id="cmpX"></button></div>
+    <p class="cmp-sub" id="cmpSub"></p>
+    <div class="cmp-range">
+      <div class="cmp-row"><span class="lbl">Début</span><button class="mini-b" data-act="cmp-adj" data-w="s" data-d="-5">−5 s</button><output id="cmpS" aria-live="off"></output><button class="mini-b" data-act="cmp-adj" data-w="s" data-d="5">+5 s</button><button class="mini-b" data-act="cmp-here" data-w="s">Ici</button></div>
+      <div class="cmp-row"><span class="lbl">Fin</span><button class="mini-b" data-act="cmp-adj" data-w="e" data-d="-5">−5 s</button><output id="cmpE" aria-live="off"></output><button class="mini-b" data-act="cmp-adj" data-w="e" data-d="5">+5 s</button><button class="mini-b" data-act="cmp-here" data-w="e">Ici</button></div>
+      <div class="cmp-len" id="cmpLen"></div>
+    </div>
+    <label for="cmpT">Titre</label>
+    <input class="inp" id="cmpT" maxlength="80" placeholder="Donnez un nom à cette scène" autocomplete="off">
+    <label for="cmpN">Note personnelle (facultatif)</label>
+    <textarea class="inp" id="cmpN" rows="3" maxlength="240" placeholder="Pourquoi ce moment compte pour vous"></textarea>
+    <div class="chips" id="cmpC" role="radiogroup" aria-label="Catégorie"></div>
+    <div class="cmp-act">
+      <button class="btn btn-ghost btn-sm" data-act="cmp-prev" id="cmpP"></button>
+      <span class="sp"></span>
+      <button class="btn btn-ghost btn-sm" data-act="cmp-x">Annuler</button>
+      <button class="btn btn-accent btn-sm" data-act="cmp-save">Enregistrer</button>
+    </div>
+  </div>
+
+  <div class="p-end" id="pEnd" hidden></div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="acct" aria-labelledby="acH">
+  <div class="dlg">
+    <button class="cbtn sm dlg-x" data-act="dlg-close" aria-label="Fermer" id="acX"></button>
+    <h2 id="acH">Un compte, si vous le souhaitez</h2>
+    <p class="dlg-p">Écrin reste entièrement accessible sans compte. Créez-en un seulement pour retrouver vos favoris, vos notes et vos temps forts sur tous vos appareils.</p>
+    <ul class="dlg-ul"><li>Favoris et titres déjà vus synchronisés</li><li>Vos notes sur 10 conservées</li><li>Vos temps forts partout avec vous</li></ul>
+    <label class="fld" for="acE">Adresse e-mail</label>
+    <input class="inp" id="acE" type="email" autocomplete="email" placeholder="vous@exemple.fr">
+    <p class="err" id="acErr" role="alert" hidden>Saisissez une adresse e-mail valide, par exemple vous@exemple.fr.</p>
+    <button class="btn btn-accent" data-act="acct-go">Recevoir un lien de connexion</button>
+    <p class="dlg-n">Maquette : aucun e-mail n’est envoyé.</p>
+  </div>
+</dialog>
+
+<dialog id="hlEdit" aria-labelledby="heH">
+  <div class="dlg">
+    <button class="cbtn sm dlg-x" data-act="dlg-close" aria-label="Fermer" id="heX"></button>
+    <h2 id="heH">Modifier ce temps fort</h2>
+    <label class="fld" for="heT">Titre</label>
+    <input class="inp" id="heT" maxlength="80" autocomplete="off">
+    <label class="fld" for="heN">Note personnelle</label>
+    <textarea class="inp" id="heN" rows="3" maxlength="240"></textarea>
+    <div class="chips" id="heC" role="radiogroup" aria-label="Catégorie"></div>
+    <div class="row2"><button class="btn btn-ghost btn-sm" data-act="dlg-close">Annuler</button><button class="btn btn-accent btn-sm" data-act="he-save">Enregistrer</button></div>
+  </div>
+</dialog>
+
+<script>
+(()=>{
+'use strict';
+
+/* ═════════ Utilitaires ═════════ */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’‘]/g,"'").toLowerCase();
+const pad=n=>String(n).padStart(2,'0');
+const fmt=s=>{s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?`${h}:${pad(m)}:${pad(s%60)}`:`${m}:${pad(s%60)}`};
+const fmtF=s=>{s=Math.max(0,Math.floor(s));return `${Math.floor(s/3600)}:${pad(Math.floor(s%3600/60))}:${pad(s%60)}`};
+const runtime=m=>m>=60?`${Math.floor(m/60)} h ${pad(m%60)}`:`${m} min`;
+const mulberry=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const reduced=()=>S.reduce||matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ═════════ Icônes ═════════ */
+const IC={
+search:'<circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.2 4.2"/>',
+heart:'<path d="M12 20.2s-7.5-4.6-7.5-10.4A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6c0 5.8-7.5 10.4-7.5 10.4Z"/>',
+check:'<circle cx="12" cy="12" r="8.5"/><path d="m8.4 12.3 2.5 2.5 4.7-5"/>',
+tick:'<path d="m5.5 12.5 4.2 4.2 8.8-9.4"/>',
+user:'<circle cx="12" cy="8.6" r="3.6"/><path d="M5 19.5c1.3-3.5 4-5.1 7-5.1s5.7 1.6 7 5.1"/>',
+play:'<path d="M8.2 5.6v12.8l10.4-6.4Z" fill="currentColor"/>',
+pause:'<rect x="6.5" y="5" width="3.6" height="14" rx="1.2" fill="currentColor" stroke="none"/><rect x="13.9" y="5" width="3.6" height="14" rx="1.2" fill="currentColor" stroke="none"/>',
+b10:'<path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M6.6 3.6v3.2h3.2"/><text x="12" y="15.2" font-size="6.6" font-weight="600" text-anchor="middle" fill="currentColor" stroke="none" style="font-family:var(--font)">10</text>',
+f10:'<path d="M19.5 12a7.5 7.5 0 1 1-2.4-5.5"/><path d="M17.4 3.6v3.2h-3.2"/><text x="12" y="15.2" font-size="6.6" font-weight="600" text-anchor="middle" fill="currentColor" stroke="none" style="font-family:var(--font)">10</text>',
+vol:'<path d="M4 9.7v4.6h3.6L12.5 18V6L7.6 9.7Z" fill="currentColor" stroke="none"/><path d="M15.8 9.2a4 4 0 0 1 0 5.6M18.4 6.6a7.6 7.6 0 0 1 0 10.8"/>',
+mute:'<path d="M4 9.7v4.6h3.6L12.5 18V6L7.6 9.7Z" fill="currentColor" stroke="none"/><path d="m16 9.5 5 5m0-5-5 5"/>',
+gear:'<path d="M4 7.5h8M17 7.5h3M4 16.5h3M12 16.5h8"/><circle cx="14.5" cy="7.5" r="2.2"/><circle cx="9.5" cy="16.5" r="2.2"/>',
+fs:'<path d="M4 9.5V4h5.5M20 9.5V4h-5.5M4 14.5V20h5.5M20 14.5V20h-5.5"/>',
+fsx:'<path d="M9.5 4v5.5H4M14.5 4v5.5H20M9.5 20v-5.5H4M14.5 20v-5.5H20"/>',
+chevL:'<path d="m14.5 6-6 6 6 6"/>',
+chevR:'<path d="m9.5 6 6 6-6 6"/>',
+home:'<path d="M4.2 11 12 4.2l7.8 6.8v8.3a.7.7 0 0 1-.7.7H14.5v-5.3h-5V20H4.9a.7.7 0 0 1-.7-.7Z"/>',
+dia:'<path d="M12 3.2 20.8 12 12 20.8 3.2 12Z"/>',
+diaplus:'<path d="M12 3.2 20.8 12 12 20.8 3.2 12Z"/><path d="M12 8.6v6.8M8.6 12h6.8"/>',
+star:'<path d="m12 3.9 2.4 5 5.5.8-4 3.9.9 5.5L12 16.5l-4.9 2.6.9-5.5-4-3.9 5.5-.8Z"/>',
+share:'<path d="M12 15.2V4.2m0 0L8.2 8m3.8-3.8L15.8 8"/><path d="M5 12.5v6a1.5 1.5 0 0 0 1.5 1.5h11a1.5 1.5 0 0 0 1.5-1.5v-6"/>',
+trash:'<path d="M5 7h14M9.8 7V4.8h4.4V7M7.2 7l.8 12.2h8l.8-12.2"/>',
+edit:'<path d="M4.5 19.5l1-4.2L16 4.8a1.9 1.9 0 0 1 2.7 0l.5.5a1.9 1.9 0 0 1 0 2.7L8.7 18.5Z"/>',
+pin:'<path d="M7.2 4.2h9.6v15.6L12 16.4l-4.8 3.4Z"/>',
+x:'<path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/>',
+info:'<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.1"/>',
+film:'<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m10.5 9.6 4 2.4-4 2.4Z" fill="currentColor"/>',
+replay:'<path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M6.6 3.6v3.2h3.2"/>'
+};
+const I=(n,s=20,c='')=>`<svg class="i ${c}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${IC[n]}</svg>`;
+
+/* ═════════ Catalogue (fictif) ═════════ */
+const T=[
+{id:1,t:'Les Heures Bleues',ty:'f',c:'films',y:2025,g:['Drame','Romance'],r:8.4,d:128,h:[215,248],m:'sun',s:'Sur une île battue par les vents, une pianiste retrouve l’homme qu’elle a quitté vingt ans plus tôt, le temps d’une nuit d’été qui refuse de finir.'},
+{id:2,t:'Maison d’Ambre',ty:'f',c:'films',y:2024,g:['Thriller','Mystère'],r:7.9,d:116,h:[34,12],m:'arch',s:'Une notaire hérite d’une demeure dont chaque pièce cache un secret, et d’un cousin qui n’aurait jamais dû exister.'},
+{id:3,t:'L’Horloger de Marée',ty:'f',c:'films',y:2025,g:['Fantastique','Aventure'],r:8.1,d:134,h:[190,232],m:'rings',s:'Dans un port où le temps suit les marées, un horloger découvre comment l’arrêter. Il en paiera le prix.'},
+{id:4,t:'Nocturne Sauvage',ty:'f',c:'films',y:2023,g:['Aventure','Drame'],r:7.6,d:109,h:[160,205],m:'mountain',s:'Une biologiste et son guide traversent un massif oublié pour retrouver une expédition disparue depuis dix ans.'},
+{id:5,t:'Cendres d’Argent',ty:'f',c:'films',y:2026,g:['Science-fiction','Drame'],r:8.6,d:142,h:[205,268],m:'grid',s:'Sur une Terre recouverte de cendres, une ingénieure capte un signal qui semble venir de son propre futur.'},
+{id:6,t:'La Dernière Saison',ty:'f',c:'films',y:2022,g:['Drame'],r:7.8,d:121,h:[18,345],m:'waves',s:'Un vigneron prépare sa dernière vendange face à une famille qui ne parvient plus à s’entendre.'},
+{id:7,t:'Vertige Doré',ty:'f',c:'films',y:2024,g:['Thriller'],r:7.4,d:112,h:[42,20],m:'diamond',s:'Une architecte découvre que la tour qu’elle a conçue cache un étage qui n’existe sur aucun plan.'},
+{id:8,t:'Aurore Boréale',ty:'f',c:'films',y:2025,g:['Romance','Drame'],r:7.7,d:118,h:[170,280],m:'moon',s:'Deux inconnus que tout oppose partagent un chalet isolé pendant la plus longue nuit de l’année.'},
+{id:9,t:'Le Cartographe',ty:'f',c:'films',y:2023,g:['Aventure'],r:8.0,d:126,h:[90,50],m:'mountain',s:'Au XIXe siècle, un cartographe reçoit la commande d’une carte d’un territoire que personne n’a jamais vu.'},
+{id:10,t:'Silence Cardinal',ty:'f',c:'films',y:2026,g:['Thriller','Mystère'],r:8.2,d:119,h:[355,320],m:'rings',s:'Un ancien négociateur est rappelé pour une affaire où l’otage refuse d’être libéré.'},
+{id:11,t:'Fréquence 9',ty:'s',c:'series',y:2025,g:['Science-fiction','Thriller'],r:8.7,d:52,ss:3,h:[200,260],m:'grid',s:'Une radio isolée en montagne capte chaque nuit les émissions du lendemain. Son équipe doit décider quoi en faire.'},
+{id:12,t:'Les Veilleurs',ty:'s',c:'series',y:2025,g:['Drame'],r:8.3,d:55,ss:2,h:[230,282],m:'moon',s:'Dans un hôpital de nuit, une poignée de soignants porte les secrets de la ville endormie.'},
+{id:13,t:'Bastide',ty:'s',c:'series',y:2023,g:['Comédie','Drame'],r:7.9,d:42,ss:4,h:[45,20],m:'sun',s:'Quatre générations se retrouvent chaque été dans une bastide provençale, et les vieux comptes se règlent à table.'},
+{id:14,t:'Haute Mer',ty:'s',c:'series',y:2026,g:['Aventure'],r:7.5,d:50,ss:1,h:[195,215],m:'waves',s:'Un équipage de voilier-école affronte une traversée que rien n’avait prévu, pas même la météo.'},
+{id:15,t:'Le Cercle d’Ivoire',ty:'s',c:'series',y:2024,g:['Thriller'],r:8.1,d:54,ss:2,h:[38,28],m:'diamond',s:'Une enquêtrice infiltre une maison de ventes aux enchères où les objets rares ont une mémoire dangereuse.'},
+{id:16,t:'Éclipse',ty:'s',c:'series',y:2025,g:['Fantastique','Mystère'],r:8.5,d:58,ss:3,h:[272,312],m:'rings',s:'Tous les sept ans, le jour disparaît pendant une heure dans un village de montagne. Cette fois, quelqu’un revient.'},
+{id:17,t:'Atelier 12',ty:'s',c:'series',y:2022,g:['Comédie'],r:7.6,d:30,ss:5,h:[15,45],m:'arch',s:'Une équipe d’artisans d’art tente de sauver un atelier parisien menacé de fermeture, avec beaucoup d’humour et peu de moyens.'},
+{id:18,t:'Les Archives du Nord',ty:'s',c:'series',y:2023,g:['Policier','Drame'],r:8.0,d:52,ss:3,h:[205,225],m:'mountain',s:'Deux archivistes rouvrent des dossiers classés et découvrent qu’une affaire de 1987 n’est pas terminée.'},
+{id:19,t:'Petit Phare',ty:'f',c:'anim',y:2025,g:['Animation','Famille'],r:8.3,d:94,h:[200,180],m:'sun',s:'Une petite gardienne de phare et son renard de brume protègent la côte des navires égarés.'},
+{id:20,t:'Lune de Papier',ty:'f',c:'anim',y:2024,g:['Animation','Fantastique'],r:8.0,d:88,h:[250,300],m:'moon',s:'Une fillette plie chaque soir une lune en papier. Une nuit, l’une d’elles s’envole.'},
+{id:21,t:'Les Voyageurs d’Encre',ty:'s',c:'anim',y:2025,g:['Animation','Aventure'],r:7.9,d:24,ss:2,h:[235,190],m:'waves',s:'Quatre amis entrent dans les livres de la bibliothèque de leur grand-mère et en changent les fins.'},
+{id:22,t:'Brume & Pixel',ty:'s',c:'anim',y:2024,g:['Animation','Comédie'],r:7.7,d:22,ss:3,h:[300,200],m:'diamond',s:'Un robot de jardin et une brume capricieuse tiennent un cabinet de détectives dans une ville miniature.'},
+{id:23,t:'Nuage Cannelle',ty:'f',c:'anim',y:2023,g:['Animation','Famille'],r:7.5,d:86,h:[25,340],m:'rings',s:'Un petit nuage sucré rêve de faire pleuvoir des gâteaux et finit par réconcilier tout un village.'},
+{id:24,t:'L’Étoile du Renard',ty:'f',c:'anim',y:2026,g:['Animation','Aventure'],r:8.2,d:97,h:[18,262],m:'mountain',s:'Un jeune renard décide de rapporter une étoile tombée sur la colline avant l’aube.'},
+{id:25,t:'Terres de Lumière',ty:'f',c:'docs',y:2025,g:['Documentaire','Nature'],r:8.4,d:104,h:[40,90],m:'mountain',s:'Un voyage au rythme du soleil, des steppes d’Asie centrale aux hauts plateaux des Andes.'},
+{id:26,t:'Océans Intimes',ty:'s',c:'docs',y:2025,g:['Documentaire','Nature'],r:8.6,d:48,ss:1,h:[195,225],m:'waves',s:'Huit portraits de personnes qui vivent de la mer et avec elle, filmés pendant trois ans.'},
+{id:27,t:'Le Souffle des Cimes',ty:'f',c:'docs',y:2024,g:['Documentaire','Aventure'],r:8.0,d:98,h:[215,180],m:'mountain',s:'Une cordée franco-népalaise tente une première hivernale, entre doute, fatigue et beauté.'},
+{id:28,t:'Cerveau en Éveil',ty:'f',c:'docs',y:2024,g:['Documentaire','Science'],r:7.8,d:92,h:[280,330],m:'rings',s:'Des chercheurs explorent ce qui se passe dans notre tête quand nous apprenons, rêvons ou oublions.'},
+{id:29,t:'Villes Invisibles',ty:'s',c:'docs',y:2023,g:['Documentaire','Société'],r:7.9,d:46,ss:2,h:[20,230],m:'grid',s:'Des urbanistes, des habitants et des artistes racontent les métropoles que l’on ne voit jamais.'},
+{id:30,t:'Carnets d’Orbite',ty:'f',c:'docs',y:2026,g:['Documentaire','Science'],r:8.1,d:101,h:[220,270],m:'moon',s:'Les carnets d’un équipage de station spatiale, entre routine, vertige et émerveillement.'}
+];
+const TREND=[5,11,16,1,25,19,3,26,10,12];
+const HERO=[5,1,16,19];
+const CAST=['Camille Roche','Elias Marchand','Noor Delcourt','Anaïs Vermeil','Théo Lacombe','Sofia Brandt','Malo Ferrand','Lina Okafor','Hugo Servin','Jade Montclar','Ravi Anand','Éloïse Garnier'];
+const DIRS=['Inès Valcourt','Mathias Orsini','Clara Weiss','Samuel Achard','Yara Benoît'];
+const CATLAB={films:'Films',series:'Séries',anim:'Animation',docs:'Documentaires'};
+const EPN=['Pilote','Le Seuil','Ce qui reste','Marée haute','La Veille','Écho','Retour de flamme','Lumière rasante','Le Dernier Mot','À contre-courant'];
+const EPD=['Un événement inattendu bouscule le quotidien et force chacun à choisir son camp.','Les premiers indices apparaissent, et avec eux une vérité que personne ne voulait entendre.','Un retour inattendu rouvre des blessures que l’on croyait refermées.','Entre promesses et silences, les alliances se redessinent.'];
+const HCATS=['Émotion','Humour','Action','Citation','Visuel'];
+const byId=id=>T.find(t=>t.id==id);
+const isS=t=>t.ty==='s';
+const cast=t=>[0,1,2].map(i=>CAST[(t.id*2+i*3)%CAST.length]);
+const dirOf=t=>DIRS[t.id%DIRS.length];
+const age=t=>t.c==='anim'?'TP':'12+';
+const lenTxt=t=>isS(t)?`${t.ss} saison${t.ss>1?'s':''}`:runtime(t.d);
+const epName=(t,s,e)=>EPN[(t.id*3+s*5+e)%EPN.length];
+const epDesc=(t,s,e)=>EPD[(t.id+s+e)%EPD.length];
+const epLabel=ep=>ep?`S${ep.s} · É${ep.e}`:'';
+
+/* ═════════ État persistant ═════════ */
+const KEY='ecrin.v1';
+const seed=()=>{const day=864e5,n=Date.now();return{
+  fav:[3,5,11,16,19],seen:[1,2,13,25],rate:{1:9,2:7,13:8,25:9},
+  prog:{5:.38,11:.62,16:.15,19:.8,26:.3},ep:{11:{s:2,e:3},16:{s:1,e:2},26:{s:1,e:1}},
+  hl:[
+    {id:'h1',tid:5,ep:null,s:3120,e:3166,title:'Le signal',note:'Le moment où tout bascule, la musique s’arrête.',cat:'Émotion',pin:true,at:n-3*day},
+    {id:'h2',tid:11,ep:{s:2,e:3},s:802,e:841,title:'La nuit au relais',note:'',cat:'Visuel',pin:false,at:n-2*day},
+    {id:'h3',tid:1,ep:null,s:4210,e:4262,title:'« On a toujours su »',note:'La réplique que je cite à tout le monde.',cat:'Citation',pin:false,at:n-day}
+  ],acct:null,reduce:false};};
+let S;
+try{S=Object.assign(seed(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(_){S=seed()}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(_){}};
+const isFav=id=>S.fav.includes(+id), isSeen=id=>S.seen.includes(+id);
+document.documentElement.dataset.motion=S.reduce?'reduced':'auto';
+
+/* ═════════ Art généré (affiches et décors) ═════════ */
+function motif(t,w,h,fx){
+  const r=mulberry(t.id*977+5),m=Math.min(w,h),k=m/200,cx=w*fx,cy=h*.4;
+  const hi=(l,a=1)=>`hsl(${t.h[0]} 75% ${l}% / ${a})`, lo=(l,s=40,a=1)=>`hsl(${t.h[1]} ${s}% ${l}% / ${a})`;
+  const ridge=(base,amp,fill,n)=>{let p=`M0 ${h}V${base.toFixed(0)}`;for(let i=1;i<=n;i++)p+=`L${(w/n*i).toFixed(0)} ${(base-r()*amp).toFixed(0)}`;return `<path d="${p}V${h}Z" fill="${fill}"/>`};
+  let s='';
+  switch(t.m){
+    case 'sun': s=`<circle cx="${cx}" cy="${cy}" r="${m*.21}" fill="${hi(82,.95)}"/>`+ridge(h*.74,h*.1,lo(16,40,.92),7)+ridge(h*.86,h*.08,lo(8,35),6);break;
+    case 'mountain': s=`<circle cx="${cx}" cy="${h*.3}" r="${m*.07}" fill="${hi(85,.9)}"/>`+ridge(h*.6,h*.22,lo(24,38,.7),5)+ridge(h*.72,h*.2,lo(14,40,.85),6)+ridge(h*.84,h*.14,lo(7,35),7);break;
+    case 'rings':for(let i=1;i<=6;i++)s+=`<circle cx="${cx}" cy="${cy}" r="${m*.07*i}" fill="none" stroke="${hi(72,Math.max(.08,.55-i*.07))}" stroke-width="${k*.9}"/>`;s+=`<circle cx="${cx}" cy="${cy}" r="${m*.035}" fill="${hi(85)}"/>`;break;
+    case 'waves':for(let i=0;i<9;i++){const y=h*(.3+i*.075),a=m*.04*(1+r());s+=`<path d="M0 ${y}Q${w*.25} ${y-a} ${w*.5} ${y}T${w} ${y}" fill="none" stroke="${hi(70,.15+i*.07)}" stroke-width="${k*1.2}"/>`}s+=`<circle cx="${cx}" cy="${h*.22}" r="${m*.06}" fill="${hi(85,.9)}"/>`;break;
+    case 'grid':{const vy=h*.52;s+=`<circle cx="${cx}" cy="${vy-m*.02}" r="${m*.13}" fill="${hi(84,.92)}"/><rect x="0" y="${vy}" width="${w}" height="${h-vy}" fill="${lo(6,35)}"/>`;for(let i=-8;i<=8;i++)s+=`<line x1="${cx}" y1="${vy}" x2="${cx+i*w*.16}" y2="${h}" stroke="${hi(70,.28)}" stroke-width="${k*.8}"/>`;for(let i=1;i<=7;i++){const y=vy+(h-vy)*(i/7)**2;s+=`<line x1="0" y1="${y}" x2="${w}" y2="${y}" stroke="${hi(70,.28)}" stroke-width="${k*.8}"/>`}s+=`<rect x="0" y="${vy}" width="${w}" height="${k*1.2}" fill="${hi(85,.55)}"/>`;break}
+    case 'moon':{for(let i=0;i<48;i++)s+=`<circle cx="${(r()*w).toFixed(0)}" cy="${(r()*h*.8).toFixed(0)}" r="${((r()*1.3+.3)*k).toFixed(2)}" fill="#fff" opacity="${(r()*.6+.2).toFixed(2)}"/>`;const R=m*.17;s+=`<path d="M${cx} ${cy-R}A${R} ${R} 0 1 0 ${cx} ${cy+R}A${R*.62} ${R} 0 1 1 ${cx} ${cy-R}Z" fill="${hi(86,.95)}"/>`+ridge(h*.86,h*.07,lo(7,35),8);break}
+    case 'arch':for(let i=0;i<4;i++){const rx=m*(.34-i*.07),x0=cx-rx,x1=cx+rx,yt=cy+m*.05,yb=h*.9;s+=`<path d="M${x0} ${yb}V${yt}A${rx} ${rx} 0 0 1 ${x1} ${yt}V${yb}" fill="${i===3?hi(80,.9):'none'}" stroke="${hi(72,.6-i*.1)}" stroke-width="${k*1.2}"/>`}break;
+    case 'diamond':for(let i=1;i<=5;i++){const d=m*.07*i;s+=`<path d="M${cx} ${cy-d}L${cx+d} ${cy}L${cx} ${cy+d}L${cx-d} ${cy}Z" fill="${i===1?hi(84,.95):'none'}" stroke="${hi(72,Math.max(.1,.55-i*.07))}" stroke-width="${k}"/>`}s+=ridge(h*.88,h*.06,lo(7,35),9);break;
+  }
+  return s;
+}
+function label(t){
+  let lines=[],cur='';
+  for(const w of t.t.split(' ')){if(cur&&(cur+' '+w).length>13){lines.push(cur);cur=w}else cur=cur?cur+' '+w:w}
+  lines.push(cur);
+  const y0=272-(lines.length-1)*21;
+  return `<rect x="16" y="${y0-27}" width="20" height="1.6" rx=".8" fill="hsl(36 48% 70%)"/>`+lines.map((l,i)=>`<text x="16" y="${y0+i*21}" class="pl">${esc(l)}</text>`).join('');
+}
+const poster=t=>`<div class="art pa" style="--h1:${t.h[0]};--h2:${t.h[1]}"><svg viewBox="0 0 200 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${motif(t,200,300,.5)}${label(t)}</svg></div>`;
+const wide=(t,fx=.7,gx='70%')=>`<div class="art" style="--h1:${t.h[0]};--h2:${t.h[1]};--gx:${gx};--gy:36%"><svg viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${motif(t,1600,800,fx)}</svg></div>`;
+
+/* ═════════ Éléments partagés ═════════ */
+const metaHTML=t=>`<span class="rt">${I('star',14,'fill')}${t.r.toFixed(1)}</span><span>${t.y}</span><span class="age">${age(t)}</span><span>${lenTxt(t)}</span>${isS(t)?`<span>${t.d} min par épisode</span>`:''}`;
+
+function card(t,o={}){
+  const p=S.prog[t.id],mine=S.rate[t.id],ep=S.ep[t.id];
+  let sub=`<div class="ms"><span>${isS(t)?'Série':'Film'}, ${t.y}</span><span class="rt">${I('star',12,'fill')}${t.r.toFixed(1)}</span></div>`;
+  if(o.prog&&p)sub=`<div class="ms"><span>${isS(t)&&ep?epLabel(ep)+', reprendre':`Reprendre, ${runtime(Math.round(t.d*(1-p)))} restantes`}</span></div>`;
+  if(o.mine&&mine)sub+=`<div class="ms mine"><span>Ma note <b>${mine}</b>/10</span></div>`;
+  return `<div class="card" role="listitem">
+  <div class="pw">
+    <a class="pl-link" href="#/t/${t.id}" aria-label="${esc(t.t)}, ${isS(t)?'série':'film'}, ${t.y}">
+      <div class="poster">${poster(t)}${t.y>=2026?'<span class="tag">Nouveau</span>':''}${o.prog&&p?`<span class="pbar"><i style="width:${Math.round(p*100)}%"></i></span>`:''}</div>
+    </a>
+    <div class="quick">
+      <button class="qb qb-play" data-act="play" data-id="${t.id}" aria-label="Lecture : ${esc(t.t)}">${I('play',17)}</button>
+      <button class="qb" data-act="fav" data-id="${t.id}" aria-pressed="${isFav(t.id)}" aria-label="Favori : ${esc(t.t)}" title="Favoris">${I('heart',17,'i-heart')}</button>
+      <button class="qb" data-act="seen" data-id="${t.id}" aria-pressed="${isSeen(t.id)}" aria-label="Déjà vu : ${esc(t.t)}" title="Déjà vu">${I('check',17)}</button>
+    </div>
+  </div>
+  <a class="meta" href="#/t/${t.id}" tabindex="-1" aria-hidden="true"><div class="mt">${esc(t.t)}</div>${sub}</a>
+</div>`;
+}
+function rowHTML(r,list){
+  return `<section class="row wrap" aria-labelledby="h-${r.k}">
+  <div class="row-head"><h2 id="h-${r.k}">${r.t}</h2>${r.all===false?'':`<a class="more" href="#/c/${r.k}">Voir tout${I('chevR',15)}</a>`}</div>
+  <div class="row-wrap">
+    <button class="chev prev" data-act="scroll" data-dir="-1" aria-label="Précédent : ${r.t}">${I('chevL',24)}</button>
+    <div class="track" role="list">${list.map(t=>card(t,{prog:r.prog})).join('')}</div>
+    <button class="chev next" data-act="scroll" data-dir="1" aria-label="Suivant : ${r.t}">${I('chevR',24)}</button>
+  </div></section>`;
+}
+function recos(){
+  const w={};
+  [...S.fav,...Object.keys(S.rate).filter(id=>S.rate[id]>=8).map(Number)].forEach(id=>{const t=byId(id);t&&t.g.forEach(g=>w[g]=(w[g]||0)+1)});
+  return T.filter(t=>!isSeen(t.id)&&!isFav(t.id)&&!(t.id in S.prog))
+    .map(t=>({t,sc:t.g.reduce((a,g)=>a+(w[g]||0),0)+t.r/10})).sort((a,b)=>b.sc-a.sc).slice(0,10).map(o=>o.t);
+}
+const ROWS=[
+ {k:'trend',t:'Tendances du moment',get:()=>TREND.map(byId)},
+ {k:'reco',t:'Recommandés pour vous',get:recos},
+ {k:'cont',t:'Continuer à regarder',get:()=>Object.keys(S.prog).map(byId).filter(Boolean),prog:1},
+ {k:'new',t:'Nouveautés',get:()=>T.filter(t=>t.y>=2025).sort((a,b)=>b.y-a.y||b.id-a.id)},
+ {k:'films',t:'Films',get:()=>T.filter(t=>t.c==='films')},
+ {k:'series',t:'Séries',get:()=>T.filter(t=>t.c==='series')},
+ {k:'anim',t:'Animation',get:()=>T.filter(t=>t.c==='anim')},
+ {k:'docs',t:'Documentaires',get:()=>T.filter(t=>t.c==='docs')}
+];
+
+/* ═════════ Vues ═════════ */
+const view=$('#view');
+let cur={k:'home'};
+const ui={season:{},hlSort:'title',hlCat:'Tous'};
+
+function vHome(){
+  const rows=ROWS.map(r=>{const l=r.get();return l.length?rowHTML(r,l):''}).join('');
+  return{title:'',html:`<h1 class="sr-only">Écrin, films et séries</h1>${heroHTML()}<div class="sections">${rows}</div>`};
+}
+function heroHTML(){
+  const ts=HERO.map(byId);
+  const slides=ts.map((t,i)=>`<div class="slide${i?'':' on'}" data-i="${i}" role="group" aria-roledescription="diapositive" aria-label="${i+1} sur ${ts.length}"${i?' aria-hidden="true" inert':''}>
+    ${wide(t,.72,'72%')}<div class="shade"></div>
+    <div class="wrap cn">
+      <p class="eyebrow">À la une, ${isS(t)?'série':'film'}</p>
+      <h2 class="h-title">${esc(t.t)}</h2>
+      <div class="h-meta">${metaHTML(t)}<span>${esc(t.g.join(', '))}</span></div>
+      <p class="h-syn">${esc(t.s)}</p>
+      <div class="h-act">
+        <button class="btn btn-primary" data-act="play" data-id="${t.id}">${I('play',18)}<span>${S.prog[t.id]?'Reprendre':'Lecture'}</span></button>
+        <a class="btn btn-glass" href="#/t/${t.id}">${I('info',18)}<span>Plus d’infos</span></a>
+        <button class="btn btn-glass btn-ico" data-act="play" data-id="${t.id}" data-trailer="1" aria-label="Bande-annonce : ${esc(t.t)}" title="Bande-annonce">${I('film',21)}</button>
+        <button class="cbtn" data-act="fav" data-id="${t.id}" aria-pressed="${isFav(t.id)}" aria-label="Favori : ${esc(t.t)}" title="Favoris">${I('heart',20,'i-heart')}</button>
+      </div>
+    </div></div>`).join('');
+  return `<section class="hero" id="hero" aria-roledescription="carrousel" aria-label="À la une">${slides}
+  <div class="wrap hero-ctl"><button class="cbtn sm" id="heroPause" data-act="hero-pause" aria-label="Mettre en pause le défilement">${I('pause',16)}</button>
+  <div class="dots">${ts.map((_,i)=>`<button class="dot${i?'':' on'}" data-act="hero-go" data-i="${i}" aria-label="Aller à la diapositive ${i+1}"></button>`).join('')}</div></div></section>`;
+}
+function vColl(k){
+  const r=ROWS.find(x=>x.k===k),list=r.get();
+  return{title:r.t,html:`<section class="page wrap"><a class="back" href="#/">${I('chevL',16)}Accueil</a><h1>${r.t}</h1><p class="sub">${list.length} titre${list.length>1?'s':''}</p>
+  <div class="grid" role="list">${list.map(t=>card(t,{prog:r.prog})).join('')}</div></section>`};
+}
+function vList(kind){
+  const isF=kind==='favoris',ids=isF?S.fav:S.seen,list=ids.map(byId).filter(Boolean).reverse();
+  const head=isF?['Favoris','Les titres que vous gardez sous la main.']:['Déjà vu','Votre historique, avec vos notes sur 10.'];
+  let stats='';
+  if(!isF&&list.length){const rated=list.filter(t=>S.rate[t.id]);const avg=rated.length?(rated.reduce((a,t)=>a+S.rate[t.id],0)/rated.length).toFixed(1):'–';
+    stats=`<div class="stats"><div><b>${list.length}</b><span>titre${list.length>1?'s':''} vu${list.length>1?'s':''}</span></div><div><b>${rated.length}</b><span>noté${rated.length>1?'s':''}</span></div><div><b>${avg}</b><span>note moyenne donnée</span></div></div>`}
+  const body=list.length?`<div class="grid" role="list">${list.map(t=>card(t,{mine:!isF})).join('')}</div>`
+    :`<div class="empty"><span class="ring">${I(isF?'heart':'check',28)}</span><h2>${isF?'Aucun favori pour l’instant':'Rien dans votre historique pour l’instant'}</h2><p>${isF?'Touchez le cœur sur une affiche pour retrouver un titre ici.':'Marquez un titre comme vu ou donnez-lui une note : il apparaîtra ici.'}</p><a class="btn btn-accent btn-sm" href="#/c/trend">Découvrir les tendances</a></div>`;
+  return{title:head[0],html:`<section class="page wrap"><h1>${head[0]}</h1><p class="sub">${head[1]}</p>${stats}${body}</section>`};
+}
+function ratingHTML(t){
+  const m=S.rate[t.id]||0;let s='';
+  for(let n=10;n>=1;n--)s+=`<button class="rs${n<=m?' on':''}" role="radio" aria-checked="${n===m}" data-act="rate" data-id="${t.id}" data-n="${n}" aria-label="${n} sur 10" title="${n}/10">${I('star',22)}</button>`;
+  return `<div class="rate"><div class="rate-h"><span>Ma note</span><span class="rv">${m?`<b>${m}</b>/10`:'<em>Pas encore noté</em>'}</span></div><div class="stars" role="radiogroup" aria-label="Ma note sur 10">${s}</div>${m?`<button class="lnk" data-act="rate" data-id="${t.id}" data-n="0">Retirer ma note</button>`:''}</div>`;
+}
+function epsHTML(t,s){
+  const st=S.ep[t.id];let h='';
+  for(let e=1;e<=8;e++){const on=st&&st.s==s&&st.e==e;
+    h+=`<li><button class="ep${on?' cur':''}" data-act="play" data-id="${t.id}" data-s="${s}" data-e="${e}" aria-label="Lire l’épisode ${e} : ${esc(epName(t,s,e))}"><span class="en">${e}</span><span class="et" style="--h1:${(t.h[0]+e*9)%360};--h2:${t.h[1]}"></span><span class="eb"><b>${esc(epName(t,s,e))}</b><small>${esc(epDesc(t,s,e))}</small></span><span class="ed">${t.d} min</span>${I('play',18)}</button></li>`}
+  return `<ol class="eps">${h}</ol>`;
+}
+function vTitle(t){
+  const prog=S.prog[t.id],st=S.ep[t.id],hls=S.hl.filter(h=>h.tid===t.id);
+  const sim=T.filter(x=>x.id!==t.id).map(x=>({x,sc:x.g.filter(g=>t.g.includes(g)).length*2+(x.c===t.c?1:0)})).filter(o=>o.sc>0).sort((a,b)=>b.sc-a.sc||b.x.r-a.x.r).slice(0,10).map(o=>o.x);
+  const season=ui.season[t.id]||(st?st.s:1);
+  const resume=prog?(isS(t)&&st?`Reprendre ${epLabel(st)}`:'Reprendre'):'Lecture';
+  const left=prog?(isS(t)?`Épisode en cours, ${Math.round(prog*100)} % visionné`:`Il reste ${runtime(Math.round(t.d*(1-prog)))}`):'';
+  const html=`<article>
+  <section class="t-hero">${wide(t,.78,'76%')}<div class="shade t-shade"></div>
+    <div class="wrap t-grid">
+      <div class="t-poster">${poster(t)}</div>
+      <div>
+        <a class="back" href="#/">${I('chevL',16)}Accueil</a>
+        <p class="eyebrow">${isS(t)?'Série':'Film'}, ${esc(t.g.join(', '))}</p>
+        <h1 class="t-title">${esc(t.t)}</h1>
+        <div class="h-meta">${metaHTML(t)}</div>
+        <p class="h-syn full">${esc(t.s)}</p>
+        <div class="h-act">
+          <button class="btn btn-primary" data-act="play" data-id="${t.id}">${I('play',18)}<span>${resume}</span></button>
+          <button class="btn btn-glass" data-act="play" data-id="${t.id}" data-trailer="1">${I('film',19)}<span>Bande-annonce</span></button>
+          <button class="btn btn-glass" data-act="fav" data-id="${t.id}" aria-pressed="${isFav(t.id)}">${I('heart',19,'i-heart')}<span class="on">Dans mes favoris</span><span class="off">Ajouter aux favoris</span></button>
+          <button class="btn btn-glass" data-act="seen" data-id="${t.id}" aria-pressed="${isSeen(t.id)}">${I('check',19)}<span class="on">Déjà vu</span><span class="off">Marquer comme vu</span></button>
+        </div>
+        ${prog?`<div class="t-prog"><div class="bar"><i style="width:${Math.round(prog*100)}%"></i></div><span>${left}</span></div>`:''}
+        <div id="rateBox">${ratingHTML(t)}</div>
+      </div>
+    </div></section>
+  ${isS(t)?`<section class="sec wrap"><h2>Épisodes<select id="seasonSel" aria-label="Saison">${Array.from({length:t.ss},(_,i)=>`<option value="${i+1}"${i+1===season?' selected':''}>Saison ${i+1}</option>`).join('')}</select></h2><div id="eps">${epsHTML(t,season)}</div></section>`:''}
+  ${hls.length?`<section class="sec wrap"><h2>Mes temps forts</h2><div class="hl-grid">${hls.map(hlCard).join('')}</div></section>`:''}
+  <section class="sec wrap"><h2>Informations</h2><dl class="det">
+    <div><dt>Réalisation</dt><dd>${esc(dirOf(t))}</dd></div>
+    <div><dt>Distribution</dt><dd>${cast(t).map(esc).join(', ')}</dd></div>
+    <div><dt>Genres</dt><dd>${esc(t.g.join(', '))}</dd></div>
+    <div><dt>Classification</dt><dd>${age(t)==='TP'?'Tous publics':'À partir de 12 ans'}</dd></div>
+    <div><dt>Audio</dt><dd>Français, English, Español, Deutsch, Italiano, audiodescription</dd></div>
+    <div><dt>Sous-titres</dt><dd>Français, English, Español, Deutsch, Italiano</dd></div>
+  </dl></section>
+  ${sim.length?`<div class="sec">${rowHTML({k:'sim',t:'Titres similaires',all:false},sim)}</div>`:''}
+  </article>`;
+  return{title:t.t,html};
+}
+
+/* Temps forts : page */
+function hlCard(h){
+  const t=byId(h.tid);if(!t)return '';
+  const art={...t,id:t.id+h.s%50,h:[(t.h[0]+h.s)%360,t.h[1]]};
+  const date=new Date(h.at).toLocaleDateString('fr-FR',{day:'numeric',month:'short'});
+  return `<article class="hl" data-hid="${h.id}">
+  <div class="hl-th">
+    <button class="hl-play" data-act="hl-play" data-hid="${h.id}" aria-label="Revoir : ${esc(h.title)}">${wide(art,.45+(h.s%5)/12,'50%')}<span class="hl-badge">${fmtF(h.s)} → ${fmtF(h.e)}</span><span class="hl-pi">${I('play',22)}</span></button>
+    <button class="hl-pin" data-act="hl-pin" data-hid="${h.id}" aria-pressed="${!!h.pin}" aria-label="Épingler : ${esc(h.title)}" title="Épingler">${I('pin',17)}</button>
+  </div>
+  <div class="hl-b"><h3>${esc(h.title)}</h3>${h.note?`<p>${esc(h.note)}</p>`:''}
+    <div class="hl-m"><span class="c">${esc(h.cat)}</span>${h.ep?`<span>${epLabel(h.ep)}</span>`:''}<span>${Math.round(h.e-h.s)} s</span><span>${date}</span></div>
+    <div class="hl-a"><button class="btn btn-ghost btn-sm" data-act="hl-play" data-hid="${h.id}">${I('play',15)}Revoir</button><span class="sp"></span>
+      <button class="ib" data-act="hl-share" data-hid="${h.id}" aria-label="Partager : ${esc(h.title)}" title="Partager">${I('share',18)}</button>
+      <button class="ib" data-act="hl-edit" data-hid="${h.id}" aria-label="Modifier : ${esc(h.title)}" title="Modifier">${I('edit',18)}</button>
+      <button class="ib del" data-act="hl-del" data-hid="${h.id}" aria-label="Supprimer : ${esc(h.title)}" title="Supprimer">${I('trash',18)}</button></div>
+  </div></article>`;
+}
+function vHL(){
+  let list=S.hl.filter(h=>byId(h.tid));
+  if(ui.hlCat!=='Tous')list=list.filter(h=>h.cat===ui.hlCat);
+  const recent=(a,b)=>b.at-a.at;
+  let body='';
+  if(!S.hl.length){
+    body=`<div class="empty"><span class="ring">${I('dia',28)}</span><h2>Aucun temps fort pour l’instant</h2><p>Pendant un visionnage, appuyez sur « Marquer un temps fort » ou sur la touche H, puis choisissez le début et la fin de la scène.</p><a class="btn btn-accent btn-sm" href="#/c/trend">Lancer un titre</a></div>`;
+  }else if(!list.length){
+    body=`<div class="empty"><h2>Aucun temps fort dans cette catégorie</h2><p>Essayez une autre catégorie ou affichez tous vos temps forts.</p></div>`;
+  }else if(ui.hlSort==='title'){
+    const groups=new Map();list.sort(recent).forEach(h=>{if(!groups.has(h.tid))groups.set(h.tid,[]);groups.get(h.tid).push(h)});
+    body=[...groups].map(([tid,hs])=>{const t=byId(tid);hs.sort((a,b)=>(epLabel(a.ep)).localeCompare(epLabel(b.ep))||a.s-b.s);
+      return `<section class="hl-group" aria-labelledby="g${tid}"><div class="hl-gh"><div class="mini">${poster(t)}</div><div><h2 id="g${tid}">${esc(t.t)}</h2><small>${hs.length} temps fort${hs.length>1?'s':''}</small></div><a href="#/t/${tid}">Voir le titre</a></div><div class="hl-grid">${hs.map(hlCard).join('')}</div></section>`}).join('');
+  }else{
+    list.sort(ui.hlSort==='pin'?((a,b)=>(b.pin-a.pin)||recent(a,b)):recent);
+    body=`<div class="hl-grid" style="margin-top:36px">${list.map(hlCard).join('')}</div>`;
+  }
+  const cats=['Tous',...HCATS];
+  return{title:'Mes Temps Forts',html:`<section class="page wrap"><h1>Mes Temps Forts</h1><p class="sub">Vos scènes préférées, rangées par film et par série.</p>
+  ${S.hl.length?`<div class="ctl"><div class="seg" role="radiogroup" aria-label="Classer par">${[['title','Par titre'],['recent','Plus récents'],['pin','Épinglés']].map(([v,l])=>`<button role="radio" aria-checked="${ui.hlSort===v}" data-act="hl-sort" data-v="${v}">${l}</button>`).join('')}</div>
+  <div class="chips" role="radiogroup" aria-label="Filtrer par catégorie">${cats.map(c=>`<button class="chip-b" role="radio" aria-checked="${ui.hlCat===c}" data-act="hl-cat" data-v="${c}">${c}</button>`).join('')}</div></div>`:''}
+  ${body}</section>`};
+}
+
+/* Routeur */
+let firstRender=true;
+function route(){
+  if(P.open)closePlayer();
+  closeSearch();closePop();
+  const p=location.hash.replace(/^#\/?/,'').split('?')[0].split('/').filter(Boolean),k=p[0]||'home';
+  if(k==='t'&&byId(p[1]))cur={k:'t',id:+p[1]};
+  else if(k==='c'&&ROWS.find(x=>x.k===p[1]))cur={k:'c',id:p[1]};
+  else if(['favoris','deja-vu','temps-forts'].includes(k))cur={k};
+  else cur={k:'home'};
+  render(false);
+}
+function render(keep){
+  const y=window.scrollY;let o;
+  switch(cur.k){case 't':o=vTitle(byId(cur.id));break;case 'c':o=vColl(cur.id);break;case 'favoris':o=vList('favoris');break;case 'deja-vu':o=vList('seen');break;case 'temps-forts':o=vHL();break;default:o=vHome()}
+  view.innerHTML=o.html;document.title=o.title?`${o.title} — Écrin`:'Écrin — Films et séries';
+  if(keep)window.scrollTo({top:y,behavior:'instant'});
+  else{view.classList.remove('enter');void view.offsetWidth;view.classList.add('enter');window.scrollTo({top:0,behavior:'instant'});
+    if(!firstRender){const h=$('h1',view);if(h){h.tabIndex=-1;h.focus({preventScroll:true})}}}
+  firstRender=false;
+  setupRows();if(cur.k==='home')initHero();
+  $$('[data-nav]').forEach(a=>{const on=a.dataset.nav===cur.k;a.classList.toggle('on',on);on?a.setAttribute('aria-current','page'):a.removeAttribute('aria-current')});
+}
+function go(h){if(location.hash===h)route();else location.hash=h}
+function setupRows(){
+  $$('.row-wrap',view).forEach(w=>{
+    const tr=$('.track',w),pv=$('.prev',w),nx=$('.next',w);
+    const upd=()=>{const max=tr.scrollWidth-tr.clientWidth-2;pv.disabled=tr.scrollLeft<=2;nx.disabled=tr.scrollLeft>=max;pv.hidden=nx.hidden=max<=0};
+    tr.addEventListener('scroll',upd,{passive:true});upd();
+    if('ResizeObserver'in window)new ResizeObserver(upd).observe(tr);
+  });
+}
+
+/* Hero */
+let heroI=0;
+function heroGo(i){
+  const hero=$('#hero');if(!hero)return;const n=HERO.length;i=(i+n)%n;heroI=i;
+  $$('.slide',hero).forEach((s,j)=>{const on=j===i;s.classList.toggle('on',on);s.inert=!on;on?s.removeAttribute('aria-hidden'):s.setAttribute('aria-hidden','true')});
+  $$('.dot',hero).forEach((d,j)=>{d.classList.remove('on');if(j===i){void d.offsetWidth;d.classList.add('on');d.setAttribute('aria-current','true')}else d.removeAttribute('aria-current')});
+}
+function initHero(){
+  heroI=0;const hero=$('#hero');if(!hero)return;
+  hero.addEventListener('animationend',e=>{if(e.animationName==='fill')heroGo(heroI+1)});
+}
+
+/* ═════════ Recherche ═════════ */
+const qIn=$('#q'),sBox=$('#sr'),sList=$('#srl'),sHead=$('#srh');
+let sRes=[],sAct=-1;
+function score(t,q){
+  const n=norm(t.t);
+  if(n.startsWith(q))return 100;
+  if(n.split(/[\s'’:&-]+/).some(w=>w.startsWith(q)))return 80;
+  if(n.includes(q))return 60;
+  const hay=norm([t.g.join(' '),cast(t).join(' '),dirOf(t),t.y,isS(t)?'serie':'film',CATLAB[t.c]].join(' '));
+  return hay.includes(q)?30:0;
+}
+function hiMark(text,q){
+  if(!q)return esc(text);const n=norm(text),i=n.indexOf(q);
+  if(i<0||n.length!==text.length)return esc(text);
+  return esc(text.slice(0,i))+'<mark>'+esc(text.slice(i,i+q.length))+'</mark>'+esc(text.slice(i+q.length));
+}
+function runSearch(){
+  const raw=qIn.value.trim(),q=norm(raw);
+  $('#qc').hidden=!qIn.value;$('#qk').hidden=!!qIn.value;
+  let head;
+  if(!q){sRes=TREND.slice(0,6).map(byId);head='Populaires en ce moment'}
+  else{sRes=T.map(t=>({t,sc:score(t,q)})).filter(o=>o.sc>0).sort((a,b)=>b.sc-a.sc||b.t.r-a.t.r).map(o=>o.t);head=`${sRes.length} résultat${sRes.length>1?'s':''}`}
+  sHead.textContent=sRes.length?head:'';sAct=-1;qIn.removeAttribute('aria-activedescendant');
+  sList.innerHTML=sRes.length?sRes.map((t,i)=>`<a role="option" id="opt-${i}" class="sr-item" href="#/t/${t.id}" data-i="${i}" aria-selected="false">
+    <span class="sr-th">${poster(t)}</span>
+    <span><span class="sr-t" style="display:block">${hiMark(t.t,q)}</span><span class="sr-s" style="display:block">${t.y}, ${isS(t)?'Série':'Film'}, ${esc(t.g.join(', '))}</span></span>
+    <span class="sr-r">${I('star',14,'fill')}${t.r.toFixed(1)}</span></a>`).join('')
+    :`<div class="sr-none"><b>Aucun résultat pour « ${esc(raw)} »</b>Essayez un titre, un genre ou le nom d’un acteur.</div>`;
+  sBox.hidden=false;qIn.setAttribute('aria-expanded','true');
+}
+function closeSearch(){sBox.hidden=true;qIn.setAttribute('aria-expanded','false');sAct=-1}
+function setAct(i){
+  const items=$$('.sr-item',sList);if(!items.length)return;
+  sAct=(i+items.length)%items.length;
+  items.forEach((el,j)=>{el.classList.toggle('act',j===sAct);el.setAttribute('aria-selected',j===sAct)});
+  qIn.setAttribute('aria-activedescendant',items[sAct].id);items[sAct].scrollIntoView({block:'nearest'});
+}
+qIn.addEventListener('input',runSearch);
+qIn.addEventListener('focus',runSearch);
+qIn.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'){e.preventDefault();if(sBox.hidden)runSearch();setAct(sAct+1)}
+  else if(e.key==='ArrowUp'){e.preventDefault();setAct(sAct-1)}
+  else if(e.key==='Enter'){const t=sRes[sAct>=0?sAct:0];if(t){e.preventDefault();qIn.blur();go('#/t/'+t.id)}}
+  else if(e.key==='Escape'){if(!sBox.hidden)closeSearch();else qIn.blur()}
+});
+sList.addEventListener('pointermove',e=>{const a=e.target.closest('.sr-item');if(a&&+a.dataset.i!==sAct)setAct(+a.dataset.i)});
+$('#qc').addEventListener('click',()=>{qIn.value='';runSearch();qIn.focus()});
+
+/* ═════════ Profil et comptes ═════════ */
+const pBtn=$('#pBtn'),pPop=$('#pPop');
+function popHTML(){
+  const a=S.acct;
+  return `<div class="pop-id"><span class="av">${a?esc(a.email[0].toUpperCase()):I('user',20)}</span><div><b>${a?esc(a.email):'Invité'}</b><small>${a?'Synchronisation activée (maquette)':'Sans compte, enregistré sur cet appareil'}</small></div></div>
+  <nav class="pop-nav" aria-label="Mon espace"><a href="#/temps-forts">${I('dia',18)}Mes Temps Forts<em>${S.hl.length}</em></a><a href="#/favoris">${I('heart',18)}Favoris<em>${S.fav.length}</em></a><a href="#/deja-vu">${I('check',18)}Déjà vu<em>${S.seen.length}</em></a></nav>
+  <div class="pop-sw"><span id="swl">Réduire les animations</span><button class="sw" role="switch" aria-checked="${S.reduce}" aria-labelledby="swl" data-act="pop-reduce"><i></i></button></div>
+  <div class="pop-cta">${a?`<button class="btn btn-ghost btn-sm" data-act="pop-out">Se déconnecter</button>`:`<p>Un compte est facultatif : il sert uniquement à synchroniser vos favoris, vos notes et vos temps forts.</p><button class="btn btn-accent btn-sm" data-act="pop-acct">Créer un compte ou se connecter</button>`}</div>`;
+}
+function openPop(){closeSearch();pPop.innerHTML=popHTML();pPop.hidden=false;pBtn.setAttribute('aria-expanded','true')}
+function closePop(){pPop.hidden=true;pBtn.setAttribute('aria-expanded','false')}
+
+/* ═════════ Actions de liste ═════════ */
+function syncMarks(){
+  $$('[data-act=fav]').forEach(b=>b.setAttribute('aria-pressed',isFav(b.dataset.id)));
+  $$('[data-act=seen]').forEach(b=>b.setAttribute('aria-pressed',isSeen(b.dataset.id)));
+}
+function toggleList(list,id){id=+id;const i=S[list].indexOf(id);i>=0?S[list].splice(i,1):S[list].push(id);save();return i<0}
+function doFav(id){const t=byId(id),on=toggleList('fav',id);syncMarks();toast(on?`« ${t.t} » ajouté aux favoris`:`« ${t.t} » retiré des favoris`);if(cur.k==='favoris')render(true)}
+function doSeen(id){const t=byId(id),on=toggleList('seen',id);if(on&&S.prog[id]){delete S.prog[id];save()}syncMarks();toast(on?`« ${t.t} » marqué comme vu`:`« ${t.t} » retiré de Déjà vu`);if(cur.k==='deja-vu')render(true)}
+function doRate(id,n){
+  const t=byId(id);
+  if(n===0){delete S.rate[id];toast('Note retirée')}
+  else{S.rate[id]=n;if(!isSeen(id)){S.seen.push(+id);delete S.prog[id];toast(`Note enregistrée : ${n}/10. Ajouté à Déjà vu.`)}else toast(`Note enregistrée : ${n}/10`)}
+  save();syncMarks();
+  const box=$('#rateBox');if(box){box.innerHTML=ratingHTML(t);const f=n?$(`[data-n="${n}"]`,box):$('.rs',box);f&&f.focus()}
+}
+
+/* Toast */
+let toastT;
+function toast(msg,act){
+  const el=$('#toast');el.innerHTML=`<span>${esc(msg)}</span>${act?`<button class="toast-act" data-act="toast-act">${esc(act.label)}</button>`:''}`;
+  toast.fn=act&&act.fn;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),act?6500:3400);
+}
+
+/* ═════════ Lecteur ═════════ */
+const player=$('#player'),pSeek=$('#pSeek'),pSet=$('#pSet'),pComp=$('#pComp');
+const AUD=[['fr','Français · 5.1'],['en','English (VO) · 5.1'],['es','Español'],['de','Deutsch'],['it','Italiano'],['ad','Audiodescription · Français']];
+const SUBS=[['off','Désactivés'],['fr','Français'],['en','English'],['es','Español'],['de','Deutsch'],['it','Italiano']];
+const QUAL=[['auto','Automatique'],['4k','4K Ultra HD · HDR'],['1080','Full HD · 1080p'],['720','HD · 720p'],['480','Économie de données · 480p']];
+const RATES=[['0.5','0,5×'],['0.75','0,75×'],['1','Normale'],['1.25','1,25×'],['1.5','1,5×'],['2','2×']];
+const CUES={
+ fr:['On n’a jamais vraiment quitté cette maison.','Dis-moi que tu l’as entendu, toi aussi.','Il reste une heure avant la marée.','Rien ne disparaît, tout change de lumière.'],
+ en:['We never really left this house.','Tell me you heard it too.','There’s an hour left before the tide.','Nothing disappears, it only changes light.'],
+ es:['Nunca dejamos realmente esta casa.','Dime que tú también lo oíste.','Queda una hora para la marea.','Nada desaparece, solo cambia de luz.'],
+ de:['Wir haben dieses Haus nie wirklich verlassen.','Sag mir, dass du es auch gehört hast.','Es bleibt noch eine Stunde bis zur Flut.','Nichts verschwindet, nur das Licht ändert sich.'],
+ it:['Non abbiamo mai davvero lasciato questa casa.','Dimmi che l’hai sentito anche tu.','Manca un’ora alla marea.','Niente scompare, cambia solo la luce.']
+};
+const P={open:false,t:null,ep:null,trailer:false,dur:0,time:0,playing:false,rate:1,vol:.8,muted:false,audio:'fr',sub:'fr',q:'auto',range:null,pend:null,fs:false,tab:'audio',last:0,raf:0,wasPlaying:false,opener:null};
+let idleT,lastCur='',lastRem='',lastSub='\u0000',lastSave=0;
+const fsEl=()=>document.fullscreenElement||document.webkitFullscreenElement;
+const epKey=ep=>ep?`${ep.s}-${ep.e}`:'';
+
+function wake(){
+  player.classList.remove('idle');clearTimeout(idleT);
+  if(P.playing&&pSet.hidden&&pComp.hidden)idleT=setTimeout(()=>{
+    const over=$('.p-bottom',player).matches(':hover')||$('.p-top',player).matches(':hover');
+    if(over)wake();else if(P.playing&&pSet.hidden&&pComp.hidden)player.classList.add('idle');
+  },3200);
+}
+function setPlaying(v){
+  P.playing=v;player.classList.toggle('paused',!v);
+  const b=$('#pPlay');b.innerHTML=I(v?'pause':'play',28);b.setAttribute('aria-label',v?'Pause':'Lecture');wake();
+}
+function cueAt(time){if(P.sub==='off')return '';const w=time%9;return w>6?'':CUES[P.sub][Math.floor(time/9)%4]}
+function paint(){
+  const p=P.dur?P.time/P.dur:0;pSeek.style.setProperty('--p',p.toFixed(5));
+  const c=fmt(P.time),r='-'+fmt(P.dur-P.time);
+  if(c!==lastCur){lastCur=c;$('#pCur').textContent=c;pSeek.setAttribute('aria-valuenow',Math.floor(p*100));pSeek.setAttribute('aria-valuetext',`${c} sur ${fmt(P.dur)}`)}
+  if(r!==lastRem){lastRem=r;$('#pRem').textContent=r}
+  const sb=cueAt(P.time);if(sb!==lastSub){lastSub=sb;$('#pSubs').innerHTML=sb?`<span>${esc(sb)}</span>`:''}
+}
+function loop(ts){
+  if(!P.open)return;
+  const dt=Math.min(.25,(ts-(P.last||ts))/1000);P.last=ts;
+  if(P.playing){
+    P.time+=dt*P.rate;
+    if(P.range&&P.time>=P.range.e){P.time=P.range.e;if(P.pend){P.range=null;setPlaying(false)}else onEnd('range')}
+    else if(P.time>=P.dur){P.time=P.dur;onEnd(P.trailer?'trailer':'media')}
+    if(ts-lastSave>5000){lastSave=ts;saveProg()}
+  }
+  paint();P.raf=requestAnimationFrame(loop);
+}
+function saveProg(){
+  if(!P.t||P.trailer||P.range)return;
+  const f=P.time/P.dur,id=P.t.id;
+  if(f>.97)return;
+  if(P.time>20){S.prog[id]=+f.toFixed(4);if(P.ep)S.ep[id]={...P.ep};save()}
+}
+function drawMarks(){
+  if(P.trailer){$('#pMarks').innerHTML='';return}
+  const k=epKey(P.ep),d=P.dur;
+  const hs=S.hl.filter(h=>h.tid===P.t.id&&epKey(h.ep)===k);
+  const m=(s,e,c='')=>`<i class="mk-r ${c}" style="left:${s/d*100}%;width:${(e-s)/d*100}%"></i><i class="mk ${c}" style="left:${s/d*100}%"></i>`;
+  $('#pMarks').innerHTML=hs.map(h=>m(h.s,h.e)).join('')+(P.pend?m(P.pend.s,P.pend.e,'pend'):'');
+}
+function load(t,o={}){
+  P.t=t;P.trailer=!!o.trailer;
+  P.ep=isS(t)&&!P.trailer?(o.ep||S.ep[t.id]||{s:1,e:1}):null;
+  P.dur=P.trailer?135:t.d*60;P.range=o.range||null;
+  const stored=S.ep[t.id],same=!o.ep||!stored||(o.ep.s==stored.s&&o.ep.e==stored.e);
+  P.time=o.start!=null?o.start:(!P.trailer&&!o.range&&S.prog[t.id]&&same?S.prog[t.id]*P.dur:0);
+  $('#pScene').innerHTML=wide(t,.55,'50%');
+  player.style.setProperty('--h1',t.h[0]);player.style.setProperty('--h2',t.h[1]);
+  const sub=P.trailer?'Bande-annonce':(P.ep?`Saison ${P.ep.s}, épisode ${P.ep.e} : ${epName(t,P.ep.s,P.ep.e)}`:'');
+  $('#pTitle').innerHTML=`${esc(t.t)}${sub?`<small>${esc(sub)}</small>`:''}<small class="demo">Lecture de démonstration, vidéo simulée</small>`;
+  $('#pHl').hidden=P.trailer;
+  lastCur=lastRem='';lastSub='\u0000';P.last=0;
+  hideEnd();drawMarks();paint();
+}
+function openPlayer(id,o={}){
+  const t=byId(id);if(!t)return;
+  closePop();closeSearch();
+  if(!P.open){
+    P.opener=document.activeElement;P.open=true;
+    P.pend=null;pComp.hidden=true;pSet.hidden=true;$('#pGear').setAttribute('aria-expanded','false');
+    player.hidden=false;player.classList.remove('cmp','idle');
+    $('#app').inert=true;document.documentElement.classList.add('lock');
+    requestAnimationFrame(()=>player.classList.add('in'));
+  }
+  load(t,o);setPlaying(true);
+  P.raf=cancelAnimationFrame(P.raf)||requestAnimationFrame(loop);
+  $('#pVol').value=P.muted?0:P.vol;
+  setTimeout(()=>$('#pPlay').focus({preventScroll:true}),30);
+}
+function closePlayer(dest){
+  if(!P.open)return;
+  saveProg();P.open=false;cancelAnimationFrame(P.raf);clearTimeout(idleT);
+  if(fsEl()){try{(document.exitFullscreen||document.webkitExitFullscreen).call(document)}catch(_){}}
+  player.classList.remove('in');
+  setTimeout(()=>{if(!P.open)player.hidden=true},380);
+  $('#app').inert=false;document.documentElement.classList.remove('lock');
+  P.pend=null;P.range=null;
+  if(dest)go(dest);
+  else if(P.opener&&document.contains(P.opener)&&P.opener.focus)P.opener.focus({preventScroll:true});
+}
+function togglePlay(){if(player.classList.contains('ended'))return;setPlaying(!P.playing)}
+function skip(d){P.time=Math.max(0,Math.min(P.dur,P.time+d));if(!(P.range&&P.time<=P.range.e&&P.time>=P.range.s))P.range=null;hideEnd();if(P.time>=P.dur)onEnd(P.trailer?'trailer':'media');paint();wake()}
+function setVol(v,mute){P.vol=v;P.muted=mute!=null?mute:v===0;$('#pVol').value=P.muted?0:v;$('#pMute').innerHTML=I(P.muted||v===0?'mute':'vol',24);$('#pMute').setAttribute('aria-label',P.muted?'Rétablir le son':'Couper le son')}
+async function toggleFs(){
+  try{
+    if(fsEl()){await (document.exitFullscreen||document.webkitExitFullscreen).call(document)}
+    else{const f=player.requestFullscreen||player.webkitRequestFullscreen;if(!f)throw 0;await f.call(player)}
+  }catch(_){toast('Le plein écran n’est pas disponible dans cet aperçu.')}
+}
+function onFs(){
+  P.fs=!!fsEl();player.classList.toggle('is-fs',P.fs);
+  $('#pExit').hidden=!P.fs;$('#pFs').innerHTML=I(P.fs?'fsx':'fs',24);$('#pFs').setAttribute('aria-label',P.fs?'Quitter le plein écran (F)':'Plein écran (F)');
+}
+document.addEventListener('fullscreenchange',onFs);document.addEventListener('webkitfullscreenchange',onFs);
+
+/* Panneau réglages */
+function renderSet(){
+  const tabs=[['audio','Audio'],['subs','Sous-titres'],['qual','Qualité'],['rate','Vitesse']];
+  const map={audio:[AUD,P.audio],subs:[SUBS,P.sub],qual:[QUAL,P.q],rate:[RATES,String(P.rate)]};
+  const [items,curv]=map[P.tab];
+  pSet.innerHTML=`<div class="tabs" role="tablist" aria-label="Réglages">${tabs.map(([k,l])=>`<button role="tab" id="tb-${k}" aria-selected="${P.tab===k}" data-act="set-tab" data-k="${k}">${l}</button>`).join('')}</div>
+  <div class="opts" role="radiogroup" aria-labelledby="tb-${P.tab}">${items.map(([v,l])=>`<button class="opt" role="radio" aria-checked="${v===curv}" data-act="set-opt" data-k="${P.tab}" data-v="${v}"><span>${l}</span>${I('tick',18)}</button>`).join('')}</div>`;
+}
+function openSet(){closeComposer(true);renderSet();pSet.hidden=false;$('#pGear').setAttribute('aria-expanded','true');player.classList.remove('idle');clearTimeout(idleT);const f=$('[aria-checked=true]',pSet)||$('.opt',pSet);f&&f.focus({preventScroll:true})}
+function closeSet(){if(pSet.hidden)return;pSet.hidden=true;$('#pGear').setAttribute('aria-expanded','false');wake()}
+
+/* Temps forts : composeur */
+function renderCats(box,cur,act){box.innerHTML=HCATS.map(c=>`<button class="chip-b" role="radio" aria-checked="${c===cur}" data-act="${act}" data-c="${c}">${c}</button>`).join('')}
+function updComposer(){
+  const c=P.pend;
+  $('#cmpS').textContent=fmtF(c.s);$('#cmpE').textContent=fmtF(c.e);
+  $('#cmpLen').textContent=`Scène de ${Math.round(c.e-c.s)} s`;drawMarks();
+}
+function openComposer(){
+  if(P.trailer||P.pend)return;closeSet();
+  P.wasPlaying=P.playing;setPlaying(false);
+  const s=Math.max(0,Math.min(P.dur-3,Math.floor(P.time)));
+  P.pend={s,e:Math.min(P.dur,s+30),cat:'Émotion'};P.range=null;
+  $('#cmpSub').textContent=`${P.t.t}${P.ep?', '+epLabel(P.ep):''}, marqué à ${fmtF(s)}`;
+  $('#cmpT').value='';$('#cmpN').value='';$('#cmpT').placeholder=`Donnez un nom à cette scène`;
+  $('#cmpP').innerHTML=I('play',14)+'Prévisualiser';
+  renderCats($('#cmpC'),P.pend.cat,'cmp-cat');updComposer();
+  pComp.hidden=false;player.classList.add('cmp');player.classList.remove('idle');clearTimeout(idleT);
+  setTimeout(()=>$('#cmpT').focus({preventScroll:true}),40);
+}
+function closeComposer(resume){
+  if(!P.pend)return;
+  P.pend=null;pComp.hidden=true;player.classList.remove('cmp');drawMarks();
+  if(resume&&P.wasPlaying)setPlaying(true);else wake();
+  P.wasPlaying=false;
+}
+function saveComposer(){
+  const c=P.pend;if(!c)return;
+  const h={id:'h'+Date.now().toString(36),tid:P.t.id,ep:P.ep?{...P.ep}:null,s:c.s,e:c.e,title:$('#cmpT').value.trim()||`Temps fort à ${fmt(c.s)}`,note:$('#cmpN').value.trim(),cat:c.cat,pin:false,at:Date.now()};
+  S.hl.push(h);save();closeComposer(true);
+  toast('Temps fort enregistré',{label:'Voir mes temps forts',fn:()=>closePlayer('#/temps-forts')});
+}
+function adj(w,d){const c=P.pend;if(!c)return;if(w==='s')c.s=Math.max(0,Math.min(c.e-3,c.s+d));else c.e=Math.min(P.dur,Math.max(c.s+3,c.e+d));updComposer()}
+function here(w){const c=P.pend;if(!c)return;const t=Math.round(P.time);if(w==='s')c.s=Math.max(0,Math.min(c.e-3,t));else c.e=Math.min(P.dur,Math.max(c.s+3,t));updComposer()}
+
+/* Fin de lecture */
+function hideEnd(){player.classList.remove('ended');$('#pEnd').hidden=true}
+function onEnd(kind){
+  setPlaying(false);player.classList.add('ended');player.classList.remove('idle');
+  const el=$('#pEnd'),t=P.t;let h='';
+  if(kind==='range'){
+    h=`<div class="end-c"><h2>Fin de la scène</h2><p>${esc(t.t)}${P.ep?', '+epLabel(P.ep):''}</p><div class="end-b"><button class="btn btn-primary btn-sm" data-act="end-replay">${I('replay',16)}Revoir la scène</button><button class="btn btn-glass btn-sm" data-act="end-continue">Continuer le visionnage</button><button class="btn btn-glass btn-sm" data-act="end-hl">Mes Temps Forts</button></div></div>`;
+  }else if(kind==='trailer'){
+    h=`<div class="end-c"><h2>Fin de la bande-annonce</h2><p>${esc(t.t)}</p><div class="end-b"><button class="btn btn-primary btn-sm" data-act="end-full">${I('play',16)}Lancer ${isS(t)?'la série':'le film'}</button><button class="btn btn-glass btn-sm" data-act="p-back">Retour au titre</button></div></div>`;
+  }else{
+    const next=P.ep&&P.ep.e<8?{s:P.ep.s,e:P.ep.e+1}:(P.ep&&P.ep.s<t.ss?{s:P.ep.s+1,e:1}:null);
+    if(!next){if(!isSeen(t.id)){S.seen.push(t.id)}delete S.prog[t.id];save()}else{S.ep[t.id]=next;delete S.prog[t.id];save()}
+    h=`<div class="end-c"><h2>${next?'Épisode terminé':'Visionnage terminé'}</h2><p>${next?`Suivant : ${esc(epName(t,next.s,next.e))}`:`« ${esc(t.t)} » a été ajouté à Déjà vu.`}</p><div class="end-b">${next?`<button class="btn btn-primary btn-sm" data-act="end-next" data-s="${next.s}" data-e="${next.e}">${I('play',16)}Épisode suivant</button>`:''}<button class="btn ${next?'btn-glass':'btn-primary'} btn-sm" data-act="end-replay">${I('replay',16)}Revoir</button><button class="btn btn-glass btn-sm" data-act="p-back">Retour au titre</button></div></div>`;
+  }
+  el.innerHTML=h;el.hidden=false;const b=$('button',el);b&&b.focus({preventScroll:true});
+}
+
+/* Barre de progression */
+let dragging=false;
+function seekFrom(e){
+  const r=pSeek.getBoundingClientRect(),p=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width));
+  P.time=p*P.dur;if(!(P.range&&P.time<=P.range.e&&P.time>=P.range.s))P.range=null;hideEnd();paint();wake();
+}
+function tipFrom(e){
+  const r=pSeek.getBoundingClientRect(),p=Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),tip=$('#pTip');
+  let txt=fmt(p*P.dur);
+  if(!P.trailer){const k=epKey(P.ep),near=S.hl.filter(h=>h.tid===P.t.id&&epKey(h.ep)===k).find(h=>Math.abs(h.s/P.dur-p)*r.width<10);if(near)txt=`<b>${esc(near.title)}</b> ${fmt(near.s)}`}
+  tip.innerHTML=txt;tip.hidden=false;tip.style.left=Math.min(r.width-40,Math.max(40,p*r.width))+'px';
+}
+pSeek.addEventListener('pointerdown',e=>{pSeek.setPointerCapture(e.pointerId);dragging=true;pSeek.classList.add('drag');seekFrom(e)});
+pSeek.addEventListener('pointermove',e=>{if(dragging)seekFrom(e);tipFrom(e)});
+pSeek.addEventListener('pointerup',()=>{dragging=false;pSeek.classList.remove('drag')});
+pSeek.addEventListener('pointerleave',()=>{if(!dragging)$('#pTip').hidden=true});
+$('#pVol').addEventListener('input',e=>{const v=+e.target.value;setVol(v,v===0)});
+$('#pHit').addEventListener('click',()=>{if(!pSet.hidden){closeSet();return}togglePlay()});
+$('#pHit').addEventListener('dblclick',toggleFs);
+['pointermove','pointerdown','touchstart'].forEach(ev=>player.addEventListener(ev,()=>{if(P.open)wake()},{passive:true}));
+player.addEventListener('focusin',()=>{if(P.open)wake()});
+
+function trap(e){
+  const f=$$('button,input,textarea,select,[tabindex="0"]',player).filter(x=>!x.disabled&&!x.closest('[hidden]')&&x.getClientRects().length);
+  if(!f.length)return;
+  const a=document.activeElement,i=f.indexOf(a);
+  if(e.shiftKey&&(i<=0)){e.preventDefault();f[f.length-1].focus()}
+  else if(!e.shiftKey&&(i===f.length-1||i<0)){e.preventDefault();f[0].focus()}
+}
+function playerKeys(e){
+  const tag=e.target.tagName,typing=(tag==='INPUT'&&e.target.type!=='range')||tag==='TEXTAREA';
+  if(e.key==='Escape'){
+    e.preventDefault();
+    if(!pComp.hidden)closeComposer(true);else if(!pSet.hidden){closeSet();$('#pGear').focus()}else if(!P.fs)closePlayer('#/t/'+P.t.id);
+    return;
+  }
+  if(e.key==='Tab'){trap(e);return}
+  if(typing)return;
+  wake();
+  const k=e.key.toLowerCase();
+  if(e.target.id==='pVol'&&k.startsWith('arrow'))return;
+  if((k===' '||k==='enter')&&e.target.matches('button,[role=radio],[role=tab]'))return;
+  switch(k){
+    case ' ':case 'k':togglePlay();break;
+    case 'arrowleft':case 'j':skip(-10);break;
+    case 'arrowright':case 'l':skip(10);break;
+    case 'arrowup':setVol(Math.min(1,P.vol+.1),false);break;
+    case 'arrowdown':setVol(Math.max(0,P.vol-.1));break;
+    case 'm':setVol(P.vol,!P.muted);break;
+    case 'f':toggleFs();break;
+    case 'h':openComposer();break;
+    case 'c':P.sub=P.sub==='off'?'fr':'off';lastSub='\u0000';break;
+    default:return;
+  }
+  e.preventDefault();
+}
+
+/* ═════════ Partage et édition ═════════ */
+async function shareHl(h){
+  const t=byId(h.tid),url=location.href.split('#')[0]+'#/t/'+t.id,txt=`« ${h.title} », ${t.t}${h.ep?' ('+epLabel(h.ep)+')':''}, de ${fmtF(h.s)} à ${fmtF(h.e)} sur Écrin`;
+  try{if(navigator.share){await navigator.share({title:h.title,text:txt,url});return}}catch(e){if(e&&e.name==='AbortError')return}
+  try{await navigator.clipboard.writeText(`${txt}\n${url}`);toast('Lien copié dans le presse-papiers');return}catch(_){}
+  try{const ta=document.createElement('textarea');ta.value=`${txt}\n${url}`;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();toast(ok?'Lien copié dans le presse-papiers':'Copie impossible dans cet aperçu')}catch(_){toast('Copie impossible dans cet aperçu')}
+}
+let editId=null,editCat='Émotion',lastDel=null;
+function openEdit(id){
+  const h=S.hl.find(x=>x.id===id);if(!h)return;editId=id;editCat=h.cat;
+  $('#heT').value=h.title;$('#heN').value=h.note||'';renderCats($('#heC'),editCat,'he-cat');$('#hlEdit').showModal();
+}
+
+/* ═════════ Délégation d’événements ═════════ */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const a=b.dataset.act,id=+b.dataset.id,d=b.dataset;
+  switch(a){
+    case 'play':openPlayer(id,{trailer:!!d.trailer,ep:d.s?{s:+d.s,e:+d.e}:undefined});break;
+    case 'fav':doFav(id);break;
+    case 'seen':doSeen(id);break;
+    case 'rate':doRate(id,+d.n);break;
+    case 'scroll':{const tr=$('.track',b.closest('.row-wrap'));tr.scrollBy({left:+d.dir*tr.clientWidth*.92,behavior:reduced()?'auto':'smooth'});break}
+    case 'hero-go':heroGo(+d.i);break;
+    case 'hero-pause':{const hero=$('#hero'),p=hero.classList.toggle('paused');b.innerHTML=I(p?'play':'pause',16);b.setAttribute('aria-label',p?'Reprendre le défilement':'Mettre en pause le défilement');break}
+    case 'hl-sort':ui.hlSort=d.v;render(true);break;
+    case 'hl-cat':ui.hlCat=d.v;render(true);break;
+    case 'hl-play':{const h=S.hl.find(x=>x.id===d.hid);if(h)openPlayer(h.tid,{ep:h.ep||undefined,start:h.s,range:{s:h.s,e:h.e}});break}
+    case 'hl-pin':{const h=S.hl.find(x=>x.id===d.hid);h.pin=!h.pin;save();render(true);const n=$(`[data-act=hl-pin][data-hid="${d.hid}"]`);n&&n.focus({preventScroll:true});break}
+    case 'hl-share':shareHl(S.hl.find(x=>x.id===d.hid));break;
+    case 'hl-edit':openEdit(d.hid);break;
+    case 'hl-del':{const i=S.hl.findIndex(x=>x.id===d.hid),h=S.hl[i];S.hl.splice(i,1);save();lastDel={h,i};render(true);toast('Temps fort supprimé',{label:'Annuler',fn:()=>{S.hl.splice(Math.min(lastDel.i,S.hl.length),0,lastDel.h);save();render(true)}});break}
+    case 'he-cat':editCat=d.c;renderCats($('#heC'),editCat,'he-cat');break;
+    case 'he-save':{const h=S.hl.find(x=>x.id===editId);if(h){h.title=$('#heT').value.trim()||h.title;h.note=$('#heN').value.trim();h.cat=editCat;save();render(true)}$('#hlEdit').close();toast('Temps fort mis à jour');break}
+    case 'dlg-close':b.closest('dialog').close();break;
+    case 'pop-acct':closePop();$('#acErr').hidden=true;$('#acct').showModal();break;
+    case 'pop-out':S.acct=null;save();pPop.innerHTML=popHTML();toast('Vous êtes déconnecté. Vos données restent sur cet appareil.');break;
+    case 'pop-reduce':S.reduce=!S.reduce;save();document.documentElement.dataset.motion=S.reduce?'reduced':'auto';b.setAttribute('aria-checked',S.reduce);break;
+    case 'acct-go':{const v=$('#acE').value.trim();if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){$('#acErr').hidden=false;$('#acE').focus();break}S.acct={email:v};save();$('#acct').close();toast('Synchronisation activée. Vos favoris, notes et temps forts vous suivent.');break}
+    case 'toast-act':{const fn=toast.fn;$('#toast').classList.remove('on');fn&&fn();break}
+    /* lecteur */
+    case 'p-back':closePlayer('#/t/'+P.t.id);break;
+    case 'p-home':closePlayer('#/');break;
+    case 'p-toggle':togglePlay();break;
+    case 'p-skip':skip(+d.d);break;
+    case 'p-mute':setVol(P.vol,!P.muted);break;
+    case 'p-fs':toggleFs();break;
+    case 'p-set':pSet.hidden?openSet():(closeSet());break;
+    case 'p-hl':openComposer();break;
+    case 'set-tab':P.tab=d.k;renderSet();$('#tb-'+d.k).focus({preventScroll:true});break;
+    case 'set-opt':{const k=d.k,v=d.v;if(k==='audio')P.audio=v;else if(k==='subs'){P.sub=v;lastSub='\u0000'}else if(k==='qual')P.q=v;else{P.rate=+v;player.style.setProperty('--spd',P.rate)}renderSet();const n=$(`[data-k="${k}"][data-v="${v}"]`,pSet);n&&n.focus({preventScroll:true});break}
+    case 'cmp-x':closeComposer(true);break;
+    case 'cmp-save':saveComposer();break;
+    case 'cmp-adj':adj(d.w,+d.d);break;
+    case 'cmp-here':here(d.w);break;
+    case 'cmp-cat':if(P.pend){P.pend.cat=d.c;renderCats($('#cmpC'),d.c,'cmp-cat');$(`[data-c="${d.c}"]`,$('#cmpC')).focus({preventScroll:true})}break;
+    case 'cmp-prev':if(P.pend){P.range={s:P.pend.s,e:P.pend.e};P.time=P.pend.s;setPlaying(true)}break;
+    case 'end-replay':{const r=P.range;hideEnd();P.time=r?r.s:0;setPlaying(true);break}
+    case 'end-continue':P.range=null;hideEnd();setPlaying(true);break;
+    case 'end-hl':closePlayer('#/temps-forts');break;
+    case 'end-next':load(P.t,{ep:{s:+d.s,e:+d.e},start:0});setPlaying(true);break;
+    case 'end-full':load(P.t,{start:0});setPlaying(true);break;
+  }
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='seasonSel'&&cur.k==='t'){const t=byId(cur.id),s=+e.target.value;ui.season[t.id]=s;$('#eps').innerHTML=epsHTML(t,s)}
+});
+document.addEventListener('pointerdown',e=>{
+  if(!$('#search').contains(e.target))closeSearch();
+  if(!$('.pwrap').contains(e.target))closePop();
+  if(P.open&&!pSet.hidden&&!pSet.contains(e.target)&&!$('#pGear').contains(e.target))closeSet();
+});
+document.addEventListener('keydown',e=>{
+  if(P.open){playerKeys(e);return}
+  if(e.key==='Escape'&&!pPop.hidden){closePop();pBtn.focus();return}
+  if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)&&!$('dialog[open]')){e.preventDefault();qIn.focus()}
+});
+pBtn.addEventListener('click',()=>pPop.hidden?openPop():closePop());
+$$('dialog').forEach(dlg=>dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()}));
+$('#acE').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('[data-act=acct-go]').click()}});
+window.addEventListener('hashchange',route);
+window.addEventListener('scroll',()=>$('#hdr').classList.toggle('solid',window.scrollY>40),{passive:true});
+window.addEventListener('pagehide',()=>{if(P.open)saveProg()});
+
+/* ═════════ Initialisation ═════════ */
+$('#sIco').innerHTML=I('search',18);
+$('#qc').innerHTML=I('x',14);
+$('[data-nav=favoris]').innerHTML=I('heart',21);
+$('[data-nav=deja-vu]').innerHTML=I('check',21);
+pBtn.innerHTML=I('user',21);
+$('#pBack').innerHTML=I('chevL',18)+'<span class="t">Retour au titre</span>';
+$('#pHome').innerHTML=I('home',18)+'<span class="t">Accueil</span>';
+$('#pExit').innerHTML=I('fsx',18)+'<span class="t">Quitter le plein écran</span>';
+$('#pB10').innerHTML=I('b10',30);$('#pF10').innerHTML=I('f10',30);
+$('#pGear').innerHTML=I('gear',24);$('#pFs').innerHTML=I('fs',24);
+$('#pBig').innerHTML=I('play',40);
+$('#pHl').insertAdjacentHTML('afterbegin',I('diaplus',20));
+$('#cmpI').innerHTML=I('dia',20);$('#cmpX').innerHTML=I('x',16);
+$('#acX').innerHTML=I('x',16);$('#heX').innerHTML=I('x',16);
+setVol(P.vol,false);
+route();
+})();
+</script>
+</body>
+</html>
